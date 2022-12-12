@@ -1,0 +1,57 @@
+const mongoose = require("mongoose");
+const { model, Schema } = mongoose
+
+
+const taskSchema = new Schema({
+    companyName: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    taskType: {
+        type: String,
+        required: true
+    },
+    priority: {
+        type: String,
+        required: true
+    },
+    isAssigned: {
+        type: String,
+        enum: ["pending", "canceled", "accepted"],
+        default: "pending"
+    },
+    assignedTo: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Users'
+    }],
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    reason: {
+        type: String,
+
+    },
+    requested_date: {
+        type: String,
+        required: true
+    },
+    contact_person_name: {
+        type: String,
+        required: true
+    },
+    contact_person_phone: {
+        type: String,
+        required: true
+    }
+}, {
+    timestapms: true
+})
+
+
+const Task = model('Task', taskSchema);
+module.exports = Task
