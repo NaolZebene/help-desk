@@ -4,7 +4,7 @@ const cookie_parser = require('cookie-parser');
 
 mongoose.set('strictQuery', true);
 
-const MONGO_URL = process.env.MONGO_URI || "mongodb://localhost/help-desk"
+const MONGO_URL = process.env.MONGO_URI || "mongodb+srv://icthd:1234icthd@cluster0.zodlpzj.mongodb.net/?retryWrites=true&w=majority"
 
 mongoose.connect(MONGO_URL, { useUnifiedTopology: true, useNewUrlParser: true }).then(() => {
     console.log("Database conneceted successfully")
