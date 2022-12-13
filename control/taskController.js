@@ -95,6 +95,7 @@ module.exports.AssignTask = async function (req, res) {
 
     task.assignedTo.push(user_data)
     task.isAssigned = "accepted"
+    task.isEscalated = false
 
 
     await task.save();

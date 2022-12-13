@@ -47,6 +47,10 @@ const taskSchema = new Schema({
     contact_person_phone: {
         type: String,
         required: true
+    },
+    isEscalated: {
+        type: Boolean,
+        default: false,
     }
 }, {
     timestapms: true
