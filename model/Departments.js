@@ -12,7 +12,7 @@ const departmentSchema = new Schema({
     }],
     isDeleted: {
         type: Boolean,
-        default: false
+        default: false  
     }
 })
 
