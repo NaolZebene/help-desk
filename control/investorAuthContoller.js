@@ -1,8 +1,10 @@
 const Investor = require('../model/Investor');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = "sjskbjdnbhjnbhjcsnskhnjdb"
+const wrapAsync = require('../util/wrapAsync')
 
-module.exports.Login = async (req, res) => {
+
+module.exports.Login = wrapAsync(async (req, res) => {
     const data = req.body;
     if (!data.companyName && data.password) {
         return res.json({
@@ -34,4 +36,4 @@ module.exports.Login = async (req, res) => {
 
     }).status(200);
 
-}
+})

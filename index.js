@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const cookie_parser = require('cookie-parser');
 const session = require('express-session');
 const cors = require('cors')
+const ExpressError = require('./util/ExpressError');
 
 mongoose.set('strictQuery', true);
 
@@ -57,10 +58,16 @@ app.get('/', function (req, res) {
         apis: [
             {
                 user: "/user",
+                investor: "/user/investor",
                 task: "/task",
-                department: "/department",
-                assign: "/:taskId/:userId",
-                decline: "/task/:taskId"
+                department: "user//department",
+                assign: "/:taskId/:userId  GET",
+                decline: "/task/:taskId  GET",
+                viewonetask: "/task/view/:taskId  GET",
+                escalatetask: "/employee/escalate/:taskId  GET",
+                login: "(admin and emp) /auth.login POST",
+                logininvestor: "/auth/investor/login POST",
+                logindepartment: "auth/investor/login POST"
             }
         ],
         operations: [
@@ -79,6 +86,14 @@ app.get('/', function (req, res) {
 
 
 
-app.get('*', function (req, res) {
-    res.send("Page not found").status(404)
+app.all('*', function (req, res, next) {
+    next(ExpressError('Page not found', 404))
+})
+
+app.use(function (err, req, res, next) {
+    const { status = 500 } = err;
+    if (!err.message) { err.message = "Something went wrong" };
+    res.json({
+        msg: err.type
+    }).status(status);
 })

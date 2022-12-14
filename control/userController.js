@@ -5,8 +5,10 @@ const User = require("../model/Users");
 const bcrypt = require('bcrypt');
 const SALT = 12
 
+const wrapAsync = require('../util/wrapAsync')
 
-module.exports.CreateUser = async function (req, res) {
+
+module.exports.CreateUser = wrapAsync(async function (req, res) {
     const data = req.body;
     console.log(req.session)
 
@@ -32,9 +34,9 @@ module.exports.CreateUser = async function (req, res) {
     return res.json({
         msg: "User created successfully"
     }).status(200)
-}
+})
 
-module.exports.EditUser = async function (req, res) {
+module.exports.EditUser = wrapAsync(async function (req, res) {
     const data = req.body;
     const { userId } = req.params
     if (data.username && data.firstname && data.lastname) {
@@ -61,9 +63,9 @@ module.exports.EditUser = async function (req, res) {
         msg: "User Information updated successfully"
     }).status(200)
 
-}
+})
 
-module.exports.DeleteUser = async function (req, res) {
+module.exports.DeleteUser = wrapAsync(async function (req, res) {
     const { userId } = req.params;
     const data_exists = await User.findById(userId);
     if (!data_exists) {
@@ -78,9 +80,9 @@ module.exports.DeleteUser = async function (req, res) {
     return res.json({
         msg: "User Deleted Successfully"
     }).status(200)
-}
+})
 
-module.exports.getAllUsers = async function (req, res) {
+module.exports.getAllUsers = wrapAsync(async function (req, res) {
     const users = await User.find({ isDeleted: false });
     let data = []
     users.forEach((user) => {
@@ -97,10 +99,10 @@ module.exports.getAllUsers = async function (req, res) {
     return res.json({
         msg: data
     }).status(200)
-}
+})
 
 
-module.exports.CreateInvestorAccount = async function (req, res) {
+module.exports.CreateInvestorAccount = wrapAsync(async function (req, res) {
     const data = req.body;
     // console.log(req.session)
 
@@ -126,10 +128,10 @@ module.exports.CreateInvestorAccount = async function (req, res) {
     return res.json({
         msg: "Investor Account created successfully"
     }).status(200)
-}
+})
 
 
-module.exports.EditInvestorAccount = async function (req, res) {
+module.exports.EditInvestorAccount = wrapAsync(async function (req, res) {
     const data = req.body;
     const { investorId } = req.params
     if (!(data.companyName && data.password && data.location && data.email)) {
@@ -157,9 +159,9 @@ module.exports.EditInvestorAccount = async function (req, res) {
     return res.json({
         msg: "Investor Account Information updated successfully"
     }).status(200)
-}
+})
 
-module.exports.DeleteInvestor = async function (req, res) {
+module.exports.DeleteInvestor = wrapAsync(async function (req, res) {
     const { investorId } = req.params;
     const data_exists = await Investor.findById(investorId);
     if (!data_exists) {
@@ -174,10 +176,10 @@ module.exports.DeleteInvestor = async function (req, res) {
     return res.json({
         msg: "Investor Account Deleted Successfully"
     }).status(200)
-}
+})
 
 
-module.exports.getAllInvestors = async function (req, res) {
+module.exports.getAllInvestors = wrapAsync(async function (req, res) {
     const users = await Investor.find({ isDeleted: false });
     let data = []
     users.forEach((user) => {
@@ -194,9 +196,9 @@ module.exports.getAllInvestors = async function (req, res) {
     return res.json({
         msg: data
     }).status(200)
-}
+})
 
-module.exports.CreateDepartment = async function (req, res) {
+module.exports.CreateDepartment = wrapAsync(async function (req, res) {
     const data = req.body;
 
     if (!data.title && !data.password) {
@@ -218,9 +220,9 @@ module.exports.CreateDepartment = async function (req, res) {
         msg: "Created A department Successfully"
     }).status(200);
 
-}
+})
 
-module.exports.EditDepartment = async function () {
+module.exports.EditDepartment = wrapAsync(async function () {
     const data = req.body;
     const { depId } = req.params
 
@@ -246,9 +248,9 @@ module.exports.EditDepartment = async function () {
         msg: "Department Updated Successfully"
     }).status(200)
 
-}
+})
 
-module.exports.DeleteDepartment = async function (req, res) {
+module.exports.DeleteDepartment = wrapAsync(async function (req, res) {
     const { depId } = req.params;
     const data = await Department.findById(depId);
 
@@ -264,9 +266,9 @@ module.exports.DeleteDepartment = async function (req, res) {
     return res.json({
         msg: "Department Deleted Successfully"
     }).status(200)
-}
+})
 
-module.exports.GetDepartments = async function (req, res) {
+module.exports.GetDepartments = wrapAsync(async function (req, res) {
     const data = await Department.find({ isDeleted: false });
     let sentdata = []
 
@@ -280,4 +282,4 @@ module.exports.GetDepartments = async function (req, res) {
     res.json({
         msg: sentdata
     }).status(200)
-}
+})

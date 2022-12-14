@@ -36,6 +36,10 @@ const taskSchema = new Schema({
         type: String,
 
     },
+    location: {
+        type: String,
+        required: true
+    },
     requested_date: {
         type: String,
         required: true

@@ -1,6 +1,7 @@
 const Task = require('../model/Tasks');
+const wrapAsync = require('../util/wrapAsync')
 
-module.exports.EscalateTask = async function (req, res) {
+module.exports.EscalateTask = wrapAsync(async function (req, res) {
     const { taskId } = req.params;
     const task = await Task.findById(taskId);
     if (!task) {
@@ -17,4 +18,5 @@ module.exports.EscalateTask = async function (req, res) {
     return res.json({
         msg: "Escalated Task Successfully",
     }).status(200)
-}
+})
+

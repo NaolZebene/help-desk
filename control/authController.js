@@ -2,8 +2,8 @@ const User = require('../model/Users')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const SECRET_KEY = "sjskbjdnbhjnbhjcsnskhnjdb"
-// const SALT = 12
-module.exports.Login = async (req, res) => {
+const wrapAsync = require('../util/wrapAsync');
+module.exports.Login = wrapAsync(async (req, res) => {
     const data = req.body;
     if (!data.username && data.password) {
         return res.json({
@@ -35,11 +35,11 @@ module.exports.Login = async (req, res) => {
 
     }).status(200);
 
-}
+})
 
 
 
-module.exports.logoutUser = (async function (req, res) {
+module.exports.logoutUser = wrapAsync(async function (req, res) {
     res.clearCookie("login_token");
     return res.json({
         msg: "Logged Out"
