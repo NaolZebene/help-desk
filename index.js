@@ -43,13 +43,14 @@ const authRouter = require('./router/authRouter');
 const taskRouter = require('./router/taskRouter');
 const userRouter = require('./router/userRouter');
 const departmentRouter = require('./router/departmentRouter');
+const employeeRouter = require('./router/employeeRouter');
 
 
 app.use("/auth", authRouter);
 app.use("/task", taskRouter)
 app.use('/user', userRouter)
-app.use('/department', departmentRouter)
-
+app.use('/department', departmentRouter);
+app.use('/employee', employeeRouter);
 
 app.get('/', function (req, res) {
     const data = {

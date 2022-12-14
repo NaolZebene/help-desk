@@ -10,9 +10,13 @@ const departmentSchema = new Schema({
         type: mongoose.Types.ObjectId,
         ref: 'Services'
     }],
+    password: {
+        type: String,
+        required: true
+    },
     isDeleted: {
         type: Boolean,
-        default: false  
+        default: false
     }
 })
 

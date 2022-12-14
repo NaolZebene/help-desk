@@ -80,7 +80,19 @@ module.exports.DeleteUser = async function (req, res) {
 
 module.exports.getAllUsers = async function (req, res) {
     const users = await User.find({ isDeleted: false });
+    data = []
+    users.forEach((user) => {
+        let datas = {
+            _id: user.id,
+            username: user.username,
+            firstName: user.firstName,
+            lastname: user.lastName,
+            role: user.role
+        }
+        data.push(datas)
+    })
     return res.json({
-        msg: users
+        msg: data
     }).status(200)
 }
+

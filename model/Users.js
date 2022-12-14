@@ -21,7 +21,7 @@ const userSchema = new Schema({
     role: {
         type: String,
         required: true,
-        enum: ["Admin", "Empolyee", "Head", "Investor"]
+        enum: ["Admin", "Empolyee"]
     },
     password: {
         type: String,
@@ -30,7 +30,7 @@ const userSchema = new Schema({
     isDeleted: {
         type: Boolean,
         default: false
-    }
+    },
 });
 
 const User = model('User', userSchema);
