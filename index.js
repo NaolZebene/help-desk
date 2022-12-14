@@ -9,7 +9,7 @@ const session = require('express-session');
 mongoose.set('strictQuery', true);
 
 const MONGO_URL = process.env.MONGO_URI
-mongoose.connect(MONGO_URL, { useUnifiedTopology: true, useNewUrlParser: true }).then(() => {
+mongoose.connect("mongodb+srv://icthd:1234icthd@cluster0.zodlpzj.mongodb.net/?retryWrites=true&w=majority", { useUnifiedTopology: true, useNewUrlParser: true }).then(() => {
     console.log("Database conneceted successfully")
 }).catch((err) => {
     console.log("Error while connecting to database");
