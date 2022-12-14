@@ -53,7 +53,7 @@ const taskSchema = new Schema({
         default: false,
     }
 }, {
-    timestapms: true
+    timestamps: true
 })
 
 

@@ -3,12 +3,7 @@ const mongoose = require('mongoose');
 const User = require('../model/Users')
 
 module.exports.CreateTask = async function (req, res) {
-    const role = req.session.user.role;
-    if (role !== "Investor") {
-        return res.json({
-            msg: "You dont have permission to perform this action"
-        }).status(401)
-    }
+
     const data = req.body;
     if (!(data.companyName && data.description && data.priority && data.taskType && data.location && data.requested_date && data.contact_person_name && data.contact_person_phone)) {
         return res.json({
@@ -41,7 +36,7 @@ module.exports.CreateTask = async function (req, res) {
 }
 
 module.exports.GetTask = async function (req, res) {
-    const tasks = await Task.find();
+    const tasks = await Task.find({ isAssigned: "pending" });
     return res.json({
         msg: tasks,
 
