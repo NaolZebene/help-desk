@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Investor = require('../model/Investor')
+const Department = require('../model/Departments')
 const User = require("../model/Users");
 const bcrypt = require('bcrypt');
 const SALT = 12
@@ -47,7 +49,7 @@ module.exports.EditUser = async function (req, res) {
         lastname: data.lastname
     }
 
-    const data_exists = await User.findOneAndUpdate(id, datas, { runValidators: true });
+    const data_exists = await User.findOneAndUpdate(userId, datas, { runValidators: true });
 
     if (!data_exists) {
         return res.json({
@@ -80,14 +82,15 @@ module.exports.DeleteUser = async function (req, res) {
 
 module.exports.getAllUsers = async function (req, res) {
     const users = await User.find({ isDeleted: false });
-    data = []
+    let data = []
     users.forEach((user) => {
         let datas = {
             _id: user.id,
             username: user.username,
             firstName: user.firstName,
             lastname: user.lastName,
-            role: user.role
+            role: user.role,
+            email: user.email
         }
         data.push(datas)
     })
@@ -96,3 +99,185 @@ module.exports.getAllUsers = async function (req, res) {
     }).status(200)
 }
 
+
+module.exports.CreateInvestorAccount = async function (req, res) {
+    const data = req.body;
+    // console.log(req.session)
+
+    if (!(data.companyName && data.password && data.location && data.email)) {
+        return res.json({
+            msg: "All inputs are required"
+        })
+    }
+
+    const hashedpassword = await bcrypt.hash(data.password, SALT);
+    let datas = {
+        companyName: data.companyName,
+        location: data.location,
+        contact_phone: data.contact_phone,
+        contact_person: data.contact_person,
+        email: data.email,
+        password: hashedpassword,
+    }
+
+    const new_investor = new Investor(datas);
+
+    await new_investor.save();
+    return res.json({
+        msg: "Investor Account created successfully"
+    }).status(200)
+}
+
+
+module.exports.EditInvestorAccount = async function (req, res) {
+    const data = req.body;
+    const { investorId } = req.params
+    if (!(data.companyName && data.password && data.location && data.email)) {
+        return res.json({
+            msg: "All inputs are required"
+        })
+    }
+
+    let datas = {
+        companyName: data.companyName,
+        location: data.location,
+        contact_phone: data.contact_phone,
+        contact_person: data.contact_person,
+        email: data.email,
+    }
+
+    const data_exists = await Investor.findOneAndUpdate(investorId, datas, { runValidators: true });
+
+    if (!data_exists) {
+        return res.json({
+            msg: "No Such Investor"
+        }).status(403)
+    }
+
+    return res.json({
+        msg: "Investor Account Information updated successfully"
+    }).status(200)
+}
+
+module.exports.DeleteInvestor = async function (req, res) {
+    const { investorId } = req.params;
+    const data_exists = await Investor.findById(investorId);
+    if (!data_exists) {
+        return res.json({
+            msg: "No Such Investor"
+        }).status(403)
+    }
+
+    data_exists.isDeleted = true;
+    await data_exists.save();
+
+    return res.json({
+        msg: "Investor Account Deleted Successfully"
+    }).status(200)
+}
+
+
+module.exports.getAllInvestors = async function (req, res) {
+    const users = await Investor.find({ isDeleted: false });
+    let data = []
+    users.forEach((user) => {
+        let datas = {
+            _id: user.id,
+            companyName: user.companyName,
+            location: user.location,
+            email: user.email,
+            contact_phone: user.contact_phone,
+            contact_person: user.contact_person
+        }
+        data.push(datas)
+    })
+    return res.json({
+        msg: data
+    }).status(200)
+}
+
+module.exports.CreateDepartment = async function (req, res) {
+    const data = req.body;
+
+    if (!data.title && !data.password) {
+        res.json({
+            msg: "Department data is required"
+        }).status(403)
+    }
+
+    const hashedpassword = await bcrypt.hash(data.password, SALT);
+    const datas = {
+        title: data.title,
+        password: hashedpassword,
+    }
+
+    const newDepartment = new Department(datas);
+    await newDepartment.save();
+
+    return res.json({
+        msg: "Created A department Successfully"
+    }).status(200);
+
+}
+
+module.exports.EditDepartment = async function () {
+    const data = req.body;
+    const { depId } = req.params
+
+    if (!data.title) {
+        res.json({
+            msg: "Department data is required"
+        }).status(403)
+    }
+
+    const datas = {
+        title: data.title
+    }
+
+    const data_exists = await Department.findOneAndUpdate(depId, datas, { runValidators: true });
+
+    if (!data_exists) {
+        return res.json({
+            msg: "No Such Department"
+        }).status(403)
+    }
+
+    return res.json({
+        msg: "Department Updated Successfully"
+    }).status(200)
+
+}
+
+module.exports.DeleteDepartment = async function (req, res) {
+    const { depId } = req.params;
+    const data = await Department.findById(depId);
+
+    if (!data) {
+        return res.json({
+            msg: "No Such Department"
+        }).status(403)
+    }
+
+    data.isDeleted = true;
+    await data.save();
+
+    return res.json({
+        msg: "Department Deleted Successfully"
+    }).status(200)
+}
+
+module.exports.GetDepartments = async function (req, res) {
+    const data = await Department.find({ isDeleted: false });
+    let sentdata = []
+
+    data.forEach((dep) => {
+        let department = {
+            title: dep.title,
+            services: dep.services
+        }
+        sentdata.push(department)
+    })
+    res.json({
+        msg: sentdata
+    }).status(200)
+}

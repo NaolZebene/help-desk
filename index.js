@@ -5,6 +5,7 @@ const { app, express } = require('./server');
 const mongoose = require('mongoose');
 const cookie_parser = require('cookie-parser');
 const session = require('express-session');
+const cors = require('cors')
 
 mongoose.set('strictQuery', true);
 
@@ -32,24 +33,23 @@ app.use(express.json());
 app.use(cookie_parser())
 app.use(function (req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", 'GET, POST, PUT, DELETE');
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Methods", '*');
+    res.setHeader("Access-Control-Allow-Headers", "*");
     next();
 })
+app.use(cors())
 
 
 /**All routing goes here */
 const authRouter = require('./router/authRouter');
 const taskRouter = require('./router/taskRouter');
 const userRouter = require('./router/userRouter');
-const departmentRouter = require('./router/departmentRouter');
 const employeeRouter = require('./router/employeeRouter');
 
 
 app.use("/auth", authRouter);
 app.use("/task", taskRouter)
 app.use('/user', userRouter)
-app.use('/department', departmentRouter);
 app.use('/employee', employeeRouter);
 
 app.get('/', function (req, res) {

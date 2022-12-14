@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const departmentController = require("../control/departmentController");
+const departmentController = require("../control/departmentAuthController");
 const { isLoggedIn } = require('../util/Auth');
 
 router.get('/', departmentController.GetDepartments);
