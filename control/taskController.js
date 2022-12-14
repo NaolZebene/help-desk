@@ -133,5 +133,22 @@ module.exports.DeclineTask = async function (req, res) {
         msg: "Task declined Successfully"
     })
 
+
 }
 
+
+module.exports.getOneTask = async function (req, res) {
+    const { taskId } = req.params;
+    const one_task = await Task.findById(taskId);
+    if (!one_task) {
+
+        return res.json({
+            msg: "Id dont exist"
+        }).status(403)
+    }
+
+    return res.json({
+        msg: one_task
+    }).status(200)
+
+}
