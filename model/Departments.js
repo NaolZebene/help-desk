@@ -14,6 +14,10 @@ const departmentSchema = new Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        default: "Department"
+    },
     isDeleted: {
         type: Boolean,
         default: false

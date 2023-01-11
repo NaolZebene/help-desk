@@ -102,15 +102,8 @@ module.exports.getAllUsers = wrapAsync(async function (req, res) {
 })
 
 
-module.exports.CreateInvestorAccount = wrapAsync(async function (req, res) {
+module.exports.CreateInvestorAccount = (async function (req, res) {
     const data = req.body;
-    // console.log(req.session)
-
-    if (!(data.companyName && data.password && data.location && data.email)) {
-        return res.json({
-            msg: "All inputs are required"
-        })
-    }
 
     const hashedpassword = await bcrypt.hash(data.password, SALT);
     let datas = {
@@ -282,4 +275,9 @@ module.exports.GetDepartments = wrapAsync(async function (req, res) {
     res.json({
         msg: sentdata
     }).status(200)
+})
+
+
+module.exports.DeclinedTasks = wrapAsync(async function (re, res) {
+
 })

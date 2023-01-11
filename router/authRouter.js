@@ -7,5 +7,8 @@ const departmentAuthController = require('../control/departmentAuthController')
 router.post('/login', authControl.Login);
 router.post('/investor/login', investorAuthContoller.Login);
 router.post('/department/login', departmentAuthController.Login);
+router.post('/verifyusertoken', authControl.VerifyUserToken);
+
+
 
 module.exports = router;

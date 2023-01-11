@@ -1,6 +1,7 @@
 const Investor = require('../model/Investor');
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = "sjskbjdnbhjnbhjcsnskhnjdb"
+const bcrypt = require('bcrypt');
 const wrapAsync = require('../util/wrapAsync')
 
 
@@ -12,7 +13,7 @@ module.exports.Login = wrapAsync(async (req, res) => {
         })
     }
 
-    const user = await Investor.findOne({ companyName: data.username });
+    const user = await Investor.findOne({ companyName: data.companyName });
     console.log(user)
     if (!user) {
         return res.json({

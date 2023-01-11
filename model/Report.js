@@ -15,9 +15,8 @@ const reportSchema = new Schema({
             type: Number,
         },
         expected: {
-            type: NUmber
+            type: Number
         },
-        required: true
     }],
     cumulative_new_jobs_created: {
         type: Number,
@@ -35,9 +34,8 @@ const reportSchema = new Schema({
             type: Number,
         },
         expected: {
-            type: NUmber
-        },
-        required: true
+            type: Number
+        }
     }],
     number_of_workers_hired: [{
         male: {
@@ -47,9 +45,8 @@ const reportSchema = new Schema({
             type: Number,
         },
         expected: {
-            type: NUmber
-        },
-        required: true
+            type: Number
+        }
     }],
     turn_over_rate: {
         type: Number,

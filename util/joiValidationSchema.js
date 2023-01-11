@@ -9,7 +9,8 @@ const schema = {
         requested_date: joi.string().required(),
         location: joi.string().required(),
         contact_person_phone: joi.string().required(),
-        contact_person_name: joi.string().required()
+        contact_person_name: joi.string().required(),
+        department: joi.string().required()
     }),
 
     user: joi.object({
@@ -33,7 +34,30 @@ const schema = {
     department: joi.object({
         title: joi.string().required(),
         password: joi.string().required(),
+    }),
+    report: joi.object({
+        companyName: joi.string().required(),
+        total_number_of_workers: joi.array().required(),
+        cumulative_new_jobs_created: joi.number().required(),
+        average_worker_per_month: joi.number().required(),
+        number_of_workers_resigned: joi.array().required(),
+        number_of_workers_hired: joi.array().required(),
+        turn_over_rate: joi.number().required(),
+        job_creation: joi.number().required(),
+        planned_monthly_report: joi.number().required(),
+        amount_of_export: joi.number().required(),
+        monthly_import_substitute: joi.number().required(),
+        amount_import_substitute: joi.number().required(),
+        certificate_type: joi.number().required(),
+        number_of_trainee: joi.number().required(),
+        duration_of_training: joi.string().required()
+    }),
+    service: joi.object({
+        companyName: joi.string().required(),
+        description: joi.string(),
+        department_name: joi.string()
     })
+
 
 }
 

@@ -1,11 +1,10 @@
-const router = require('express').Router();
-const departmentController = require("../control/departmentAuthController");
-const { isLoggedIn } = require('../util/Auth');
+const router = require('express').Router()
+const { DepartmentEscalatedTasks } = require('../control/taskController');
+const isDepAuth = require("../util/isDep-Auth");
 
-router.get('/', departmentController.GetDepartments);
-router.post('/post', departmentController.CreateDepartment);
-router.put('/:id', departmentController.EditDepartment);
-router.post('/:id', departmentController.DeleteDepartment);
+const { isDepartment } = require("../util/Authorization");
+
+router.get('/escalated/:id', isDepAuth, isDepartment, DepartmentEscalatedTasks)
 
 
 module.exports = router;

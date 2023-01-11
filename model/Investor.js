@@ -24,13 +24,17 @@ const investorSchema = new Schema({
         type: String,
         required: true
     },
+    role: {
+        type: String,
+        default: "Investor"
+    },
     email: {
         type: String,
         required: true
     },
     isDeleted: {
         type: Boolean,
-        required: true
+        default: false
     }
 })
 

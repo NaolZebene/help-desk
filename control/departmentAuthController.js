@@ -1,17 +1,18 @@
 const Department = require('../model/Departments')
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = "sjskbjdnbhjnbhjcsnskhnjdb"
+const SECRET_KEY = "department"
+const bcrypt = require('bcrypt');
 const wrapAsync = require('../util/wrapAsync')
 
 module.exports.Login = wrapAsync(async (req, res) => {
     const data = req.body;
     if (!data.title && data.password) {
         return res.json({
-            msg: "Please Enter Your companyname or password"
+            msg: "Please Enter Your Department or password"
         })
     }
 
-    const user = await Department.findOne({ companyName: data.username });
+    const user = await Department.findOne({ title: data.title });
     console.log(user)
     if (!user) {
         return res.json({

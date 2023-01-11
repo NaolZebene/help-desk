@@ -46,12 +46,18 @@ const authRouter = require('./router/authRouter');
 const taskRouter = require('./router/taskRouter');
 const userRouter = require('./router/userRouter');
 const employeeRouter = require('./router/employeeRouter');
+const investorRouter = require('./router/investorRouter')
+const departmentRouter = require('./router/departmentRouter');
 
 
 app.use("/auth", authRouter);
 app.use("/task", taskRouter)
 app.use('/user', userRouter)
 app.use('/employee', employeeRouter);
+app.use('/report', investorRouter);
+app.use('/department', departmentRouter);
+
+
 
 app.get('/', function (req, res) {
     const data = {

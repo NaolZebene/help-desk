@@ -3,6 +3,11 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const SECRET_KEY = "sjskbjdnbhjnbhjcsnskhnjdb"
 const wrapAsync = require('../util/wrapAsync');
+
+
+
+
+
 module.exports.Login = wrapAsync(async (req, res) => {
     const data = req.body;
     if (!data.username && data.password) {
@@ -37,11 +42,15 @@ module.exports.Login = wrapAsync(async (req, res) => {
 
 })
 
-
-
-module.exports.logoutUser = wrapAsync(async function (req, res) {
-    res.clearCookie("login_token");
+module.exports.VerifyUserToken = wrapAsync(async function (req, res) {
+    const token = req.body.token.split(" ")[1];
+    const validToken = jwt.verify(token, SECRET_KEY);
+    if (!validToken) {
+        return res.json({
+            msg: true
+        }).status(401)
+    }
     return res.json({
-        msg: "Logged Out"
-    })
+        msg: false
+    }).status(200)
 })

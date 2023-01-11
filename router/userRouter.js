@@ -1,9 +1,12 @@
 const router = require('express').Router();
 const userController = require('../control/userController');
-const { isLoggedIn } = require('../util/Auth');
-const { route } = require('./reportRouter');
-const { addInvestorValidation, addDepartmentValidation } = require("../util/joiValidation");
 
+const { isLoggedIn } = require('../util/Auth');
+
+const { addInvestorValidation, addDepartmentValidation, addServiceValidation } = require("../util/joiValidation");
+const serviceController = require('../control/serviceController')
+
+/**user account */
 router.post('/post', userController.CreateUser);
 router.put('/:userId', userController.EditUser);
 router.post('/:userId', userController.DeleteUser);
@@ -21,7 +24,16 @@ router.post('/investor/:investorId', userController.DeleteInvestor);
 
 router.post('/department/post', addDepartmentValidation, userController.CreateDepartment);
 router.get('/department', userController.GetDepartments);
-router.put('/department/:depId', addDepartmentValidation, userController.EditDepartment);
+router.put('/department/:depId', addServiceValidation, addDepartmentValidation, userController.EditDepartment);
 router.post('/department/:depId', userController.DeleteDepartment);
+
+
+/** Services Router*/
+
+router.post('/services/post', serviceController.CreateServices);
+router.get('/services', serviceController.getAllServices);
+router.get('/services/:id', serviceController.getOneService);
+router.put('/services/:id', serviceController.EditServices);
+router.delete('/services/:id', serviceController.DeleteService);
 
 module.exports = router;

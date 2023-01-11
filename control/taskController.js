@@ -1,10 +1,20 @@
 const Task = require('../model/Tasks');
 const mongoose = require('mongoose');
 const User = require('../model/Users')
-const wrapAsync = require('../util/wrapAsync')
+const wrapAsync = require('../util/wrapAsync');
+const Departments = require('../model/Departments')
+const jwt = require('jsonwebtoken');
+const SECRET_KEY = "department";
 
-module.exports.CreateTask = wrapAsync(async function (req, res) {
+module.exports.CreateTask = (async function (req, res) {
     const data = req.body;
+    const dep = await Departments.findOne({ title: data.department });
+
+    if (!dep) {
+        return res.json({
+            msg: "No such department"
+        }).status(401)
+    }
     let datas = {
         companyName: data.companyName,
         description: data.description,
@@ -16,6 +26,7 @@ module.exports.CreateTask = wrapAsync(async function (req, res) {
         requested_date: data.requested_date,
     }
     const task = new Task(datas);
+    task.department = dep
     await task.save();
     return res.json({
         msg: "Task submitted Successfully"
@@ -25,7 +36,11 @@ module.exports.CreateTask = wrapAsync(async function (req, res) {
 
 
 module.exports.GetTask = wrapAsync(async function (req, res) {
-    const tasks = await Task.find({ isAssigned: "pending" });
+    const token = req.get("Authorization").split(" ")[1];
+    const decodedToken = jwt.verify(token, SECRET_KEY)
+    const id = decodedToken.id
+
+    const tasks = await Task.find({ department: id, isAssigned: "pending" });
     return res.json({
         msg: tasks,
 
@@ -114,4 +129,17 @@ module.exports.getOneTask = wrapAsync(async function (req, res) {
     return res.json({
         msg: one_task
     }).status(200)
+})
+
+
+module.exports.DepartmentEscalatedTasks = wrapAsync(async function (req, res) {
+    const token = req.get("Authorization").split(" ")[1];
+    const decodedToken = jwt.verify(token, SECRET_KEY)
+    const id = decodedToken.id
+    const escalatedTasks = await Task.find({ department: id, isEscalated: true });
+
+    return res.json({
+        msg: escalatedTasks
+    }).status(200)
+
 })

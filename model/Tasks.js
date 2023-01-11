@@ -11,6 +11,12 @@ const taskSchema = new Schema({
         type: String,
         required: true
     },
+    department:
+    {
+        type: mongoose.Types.ObjectId,
+        ref: 'Departments'
+    }
+    ,
     taskType: {
         type: String,
         required: true
@@ -34,7 +40,6 @@ const taskSchema = new Schema({
     },
     reason: {
         type: String,
-
     },
     location: {
         type: String,
