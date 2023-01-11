@@ -1,17 +1,20 @@
 const mongoose = require('mongoose');
 const Investor = require('../model/Investor')
 const Department = require('../model/Departments')
+const jwt = require('jsonwebtoken')
+const Task = require('../model/Tasks')
 const User = require("../model/Users");
 const bcrypt = require('bcrypt');
 const SALT = 12
+const SECRET_KEY = "department"
 
 const wrapAsync = require('../util/wrapAsync')
 
 
 module.exports.CreateUser = wrapAsync(async function (req, res) {
+    const token = req.get("Authorization").split(" ")[1];
+    const decodedToken = jwt.verify(token, SECRET_KEY);
     const data = req.body;
-    console.log(req.session)
-
     if (!(data.firstName && data.lastName && data.password && data.role && data.email && data.username && data.password)) {
         return res.json({
             msg: "All inputs are required"
@@ -24,6 +27,7 @@ module.exports.CreateUser = wrapAsync(async function (req, res) {
         lastName: data.lastName,
         username: data.username,
         email: data.email,
+        department: decodedToken.name,
         password: hashedpassword,
         role: data.role
     }
@@ -83,7 +87,10 @@ module.exports.DeleteUser = wrapAsync(async function (req, res) {
 })
 
 module.exports.getAllUsers = wrapAsync(async function (req, res) {
-    const users = await User.find({ isDeleted: false });
+    const token = req.get("Authorization").split(" ")[1];
+    const decodedToken = jwt.verify(token, SECRET_KEY);
+    const users = await User.find({ isDeleted: false, department: decodedToken.name });
+
     let data = []
     users.forEach((user) => {
         let datas = {
@@ -278,6 +285,34 @@ module.exports.GetDepartments = wrapAsync(async function (req, res) {
 })
 
 
-module.exports.DeclinedTasks = wrapAsync(async function (re, res) {
+module.exports.AdminDeclinedTasks = wrapAsync(async function (req, res) {
+    const declinedTasks = await Task.find({ isAssigned: "canceled" }).populate("department")
+    return res.json({
+        msg: declinedTasks
+    }).status(200)
+
+})
+
+module.exports.AssignToDepartment = wrapAsync(async function (re, res) {
+    const id = req.body.depId
+    const { taskId } = req.params;
+    const department = await Department.findById(id)
+    if (!department) {
+        return res.json({
+            msg: "No such department"
+        })
+    }
+
+    const task = await Task.findOne({ _id: taskId })
+    if (!task) {
+        return res.json("NO such task")
+    }
+
+    task.department = department
+    await task.save();
+
+    return res.json({
+        msg: "Task Assigned Successfully"
+    })
 
 })

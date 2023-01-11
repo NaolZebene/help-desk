@@ -1,10 +1,12 @@
 const Task = require('../model/Tasks');
 const mongoose = require('mongoose');
+const Investor = require('../model/Investor')
 const User = require('../model/Users')
 const wrapAsync = require('../util/wrapAsync');
 const Departments = require('../model/Departments')
 const jwt = require('jsonwebtoken');
 const SECRET_KEY = "department";
+const INVESTOR_SECRET = "investor"
 
 module.exports.CreateTask = (async function (req, res) {
     const data = req.body;
@@ -143,3 +145,35 @@ module.exports.DepartmentEscalatedTasks = wrapAsync(async function (req, res) {
     }).status(200)
 
 })
+
+
+module.exports.ViewSentTask = wrapAsync(async function (req, res) {
+    const token = req.get("Authorization").split(" ")[1];
+    const decodedToken = jwt.verify(token, INVESTOR_SECRET)
+    const companyName = decodedToken.name
+
+    const company = await Task.find({ companyName: companyName });
+
+    return res.json({
+        msg: company
+    }).status(200)
+
+})
+
+module.exports.CompleteTask = wrapAsync(async function (req, res) {
+    const { taskId } = req.params;
+
+    const task = await Task.findOne({ _id: taskId });
+    if (!task) {
+        return res.json({
+            msg: "No such task"
+        }).status(401)
+    }
+    task.isAssigned = "completed";
+    await task.save();
+
+    return res.json({
+        msg: "Successfull"
+    }).status(200)
+})
+

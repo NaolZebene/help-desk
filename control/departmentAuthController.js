@@ -26,7 +26,7 @@ module.exports.Login = wrapAsync(async (req, res) => {
             msg: "Incorrect Department name or Password"
         }).status(401)
     }
-    const token = jwt.sign({ id: user._id, role: user.role }, SECRET_KEY, { expiresIn: "24h" });
+    const token = jwt.sign({ id: user._id, role: user.role, name: user.title }, SECRET_KEY, { expiresIn: "24h" });
     req.session.token = token
     req.session.user = user
 

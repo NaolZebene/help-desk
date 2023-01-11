@@ -6,6 +6,9 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
+    department: {
+        type: String,
+    },
     firstName: {
         type: String,
         required: true

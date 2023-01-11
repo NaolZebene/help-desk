@@ -27,7 +27,7 @@ const taskSchema = new Schema({
     },
     isAssigned: {
         type: String,
-        enum: ["pending", "canceled", "accepted"],
+        enum: ["pending", "canceled", "accepted", "completed"],
         default: "pending"
     },
     assignedTo: [{
