@@ -16,7 +16,6 @@ const {
 
 router.get('/', taskController.GetTask);
 router.post('/post', addTaskValidation, taskController.CreateTask);
-// router.put('/:id', addTaskValidation, taskController.UpdateTask);
 router.get('/view/:taskId', isDepAuth, isDepartment, taskController.getOneTask);
 router.get('/:taskId/:userId', isDepAuth, isDepartment, taskController.AssignTask);
 router.get('/:taskId/decline', isDepAuth, isDepartment, taskController.DeclineTask);

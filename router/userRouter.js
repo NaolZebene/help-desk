@@ -2,6 +2,7 @@ const router = require('express').Router();
 const userController = require('../control/userController');
 
 const isDepAuth = require('../util/isDep-Auth');
+const isLoggedIn = require('../util/isUser-Auth')
 
 const { addInvestorValidation, addDepartmentValidation, addServiceValidation } = require("../util/joiValidation");
 const serviceController = require('../control/serviceController');
