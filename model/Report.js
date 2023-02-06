@@ -70,13 +70,18 @@ const reportSchema = new Schema({
     type: String,
     required: true,
   },
-  challenges:{
-    type:String, 
-  }, 
-  to:{
-    type:String, 
-    required:true
-  }
+  // imageURL: {
+  //   type: String,
+  //   required: true,
+  // },
+  challenges: {
+    type: String,
+  },
+  to: {
+    type: String,
+    default: "investor",
+    required: true,
+  },
 });
 
 const Report = model("Report", reportSchema);

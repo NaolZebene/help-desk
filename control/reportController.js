@@ -3,7 +3,6 @@ const wrapAsync = require("../util/wrapAsync");
 const jwt = require("jsonwebtoken");
 const INV_SEC = "investor";
 
-
 module.exports.SubmitReport = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, INV_SEC);
@@ -30,8 +29,9 @@ module.exports.SubmitReport = wrapAsync(async function (req, res) {
     number_of_trainee: incoming.number_of_trainee,
     duration_of_training: incoming.duration_of_training,
     additional_file: additional_file,
-    challenges:incoming.challenges, 
-    to:incoming.departmentName
+    challenges: incoming.challenges,
+    to: incoming.departmentName,
+    // imageURL: "reportFiles/1.jpg",
   };
   const newReport = new Report(all_data);
   await newReport.save();

@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
-const {model,Schema} = mongoose
+const { model, Schema } = mongoose;
 
 const clientSchema = new Schema({
-    name:{
-type:String
-    },
-    logo:{
-        type:String
-    }, 
-    isDeleted:{
-        type:Boolean, 
-        isDeleted:false
-    }
-})
+  name: {
+    type: String,
+  },
+  logo: {
+    type: String,
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+});
 
-module.exports = model('Clients',clientSchema)
+module.exports = model("Clients", clientSchema);

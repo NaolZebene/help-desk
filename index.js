@@ -36,6 +36,8 @@ const sessionMiddleWare = session(sessionConfig);
 
 app.use(sessionMiddleWare);
 app.use(express.static(path.join(__dirname, "/public")));
+app.use("/reportFiles", express.static(path.join(__dirname, "reportFiles")));
+app.use("/logo", express.static(path.join(__dirname, "logo")));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -55,8 +57,8 @@ const userRouter = require("./router/userRouter");
 const employeeRouter = require("./router/employeeRouter");
 const investorRouter = require("./router/investorRouter");
 const departmentRouter = require("./router/departmentRouter");
-const testimonialRouter  = require('./router/testimonialRouter');
-const clientRouter = require("./router/clientRouter")
+const testimonialRouter = require("./router/testimonialRouter");
+const clientRouter = require("./router/clientRouter");
 
 app.use("/auth", authRouter);
 app.use("/task", taskRouter);
@@ -64,9 +66,8 @@ app.use("/user", userRouter);
 app.use("/employee", employeeRouter);
 app.use("/report", investorRouter);
 app.use("/department", departmentRouter);
-app.use("/testimonial",testimonialRouter);
-app.use("/clients",clientRouter);
-
+app.use("/testimonial", testimonialRouter);
+app.use("/clients", clientRouter);
 
 app.get("/", function (req, res) {
   const data = {
