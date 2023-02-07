@@ -1,12 +1,17 @@
+const fs = require("fs");
+const path = require("path");
+
 const Department = require("../model/Departments");
 const Services = require("../model/Services");
 const wrapAsync = require("../util/wrapAsync");
 const mongoose = require("mongoose");
 
 module.exports.CreateServices = wrapAsync(async function (req, res) {
-  const data = JSON.parse(req.body.str)[0];
-  const icon = req.file.filename;
-  const department = await Department.findOne({ title: data.department });
+  const title = req.body.title;
+  const description = req.body.description;
+  const dep = req.body.department;
+  const icon = req.file.path;
+  const department = await Department.findOne({ title: dep });
   if (!department) {
     return res
       .json({
@@ -16,10 +21,10 @@ module.exports.CreateServices = wrapAsync(async function (req, res) {
   }
 
   let new_data = {
-    title: data.title,
-    description: data.description,
+    title: title,
+    description: description,
     department: department,
-    icon:icon
+    icon: icon,
   };
 
   const new_service = new Services(new_data);
@@ -34,12 +39,15 @@ module.exports.CreateServices = wrapAsync(async function (req, res) {
     .status(200);
 });
 
-module.exports.EditServices = wrapAsync(async function (req, res) {
+module.exports.EditServices = async function (req, res) {
   const { id } = req.params;
-  const data = JSON.parse(req.body.str)[0];
-  const icon = req.file.filename;
 
-  const department = await Department.findOne({ title: data.department });
+  const title = req.body.title;
+  const description = req.body.description;
+  const dep = req.body.department;
+  let icon = req.body.icon;
+
+  const department = await Department.findOne({ title: dep });
   if (!department) {
     return res
       .json({
@@ -48,14 +56,16 @@ module.exports.EditServices = wrapAsync(async function (req, res) {
       .status(401);
   }
 
-  let new_data = {
-    title: data.title,
-    description: data.description,
-    department: department,
-    icon:icon
-  };
+  if (req.file) {
+    icon = req.file.path;
+  }
+  if (!icon) {
+    return res.json({
+      msg: "image Required",
+    });
+  }
 
-  const edited_service = await Services.findOneAndUpdate(id, { new_data });
+  const edited_service = await Services.findById(id);
 
   if (!edited_service) {
     return res
@@ -65,12 +75,25 @@ module.exports.EditServices = wrapAsync(async function (req, res) {
       .status(401);
   }
 
+  if (icon !== edited_service.icon) {
+    clearImage(edited_service.icon);
+  }
+
+  let new_data = {
+    title: title,
+    description: description,
+    department: department,
+    icon: icon,
+  };
+
+  await Services.findByIdAndUpdate(id, new_data);
+
   return res
     .json({
       msg: "Service Updated Successfully",
     })
     .status(200);
-});
+};
 
 module.exports.DeleteService = wrapAsync(async function (req, res) {
   const { id } = req.params;
@@ -81,7 +104,8 @@ module.exports.DeleteService = wrapAsync(async function (req, res) {
       msg: "No Such Service",
     });
   }
-  deleted_data.isDeleted = True;
+  deleted_data.isDeleted = true;
+  await deleted_data.save();
   return res.json({
     msg: "Service Deleted Successfully",
   });
@@ -89,7 +113,7 @@ module.exports.DeleteService = wrapAsync(async function (req, res) {
 
 module.exports.getOneService = wrapAsync(async function (req, res) {
   const { id } = req.params;
-  const data = Services.findById(id);
+  const data = await Services.findById(id).populate({ path: "department" });
 
   if (!data) {
     return res
@@ -101,16 +125,21 @@ module.exports.getOneService = wrapAsync(async function (req, res) {
 
   return res
     .json({
-      msg: data.populate({ path: "department" }),
+      msg: data,
     })
     .status(200);
 });
 
 module.exports.getAllServices = wrapAsync(async function (req, res) {
-  const data = await Services.find();
+  const data = await Services.find({ isDeleted: false });
   return res
     .json({
       msg: data,
     })
     .status(200);
 });
+
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => console.log(err));
+};

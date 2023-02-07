@@ -8,7 +8,7 @@ const multer = require("multer");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "public");
+    cb(null, "icon");
   },
   filename: function (req, file, cb) {
     cb(null, new Date().getMonth() + "-" + file.originalname);
@@ -16,7 +16,7 @@ var storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-const service_icon = upload.single("serviceIcon");
+const service_icon = upload.single("icon");
 
 const {
   addInvestorValidation,
@@ -81,9 +81,9 @@ router.post("/department/:depId", userController.DeleteDepartment);
 
 /** Services Router*/
 
+router.get("/services/:id", service_icon, serviceController.getOneService);
 router.post("/services/post", service_icon, serviceController.CreateServices);
 router.get("/services", serviceController.getAllServices);
-router.get("/services/:id", serviceController.getOneService);
 router.put("/services/:id", service_icon, serviceController.EditServices);
 router.delete("/services/:id", serviceController.DeleteService);
 
