@@ -8,6 +8,7 @@ const session = require("express-session");
 const cors = require("cors");
 const ExpressError = require("./util/ExpressError");
 const path = require("path");
+const checkUser = require("./util/seedAdmin");
 
 mongoose.set("strictQuery", true);
 
@@ -25,6 +26,14 @@ mongoose
     console.log(err);
   });
 mongoose.set("strictQuery", true);
+
+checkUser()
+  .then(() => {
+    console.log("User Exists");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 const sessionConfig = {
   secret: "secret",

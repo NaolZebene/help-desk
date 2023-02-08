@@ -5,10 +5,10 @@ const isUserAuth = require("../util/isUser-Auth");
 const isInvAuth = require("../util/isInv-Auth");
 const isDepAuth = require("../util/isDep-Auth");
 
-router.get(
+router.post(
   "/escalate/:taskId",
-  isUserAuth,
-  isEmployee,
+  // isUserAuth,
+  // isEmployee,
   employeeController.EscalateTask
 );
 

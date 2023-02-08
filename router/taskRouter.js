@@ -13,11 +13,11 @@ const {
 } = require("../util/Authorization");
 
 router.get("/", taskController.GetTask);
-router.get('/allhistory', isDepAuth, taskController.AllHistory)
+router.get("/allhistory", isDepAuth, taskController.AllHistory);
 router.get("/completedtasks", isInvAuth, taskController.ViewCompletedTasks);
-router.post("/post", isInvAuth, addTaskValidation, taskController.CreateTask);
+router.post("/post", isInvAuth, taskController.CreateTask);
 router.get("/view/:taskId", taskController.getOneTask);
-router.get(
+router.post(
   "/:taskId/:userId",
   isDepAuth,
   isDepartment,
@@ -29,7 +29,5 @@ router.post(
   isDepartment,
   taskController.DeclineTask
 );
-
-
 
 module.exports = router;

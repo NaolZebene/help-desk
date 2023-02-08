@@ -137,7 +137,13 @@ module.exports.getAllUsers = wrapAsync(async function (req, res) {
 
 module.exports.CreateInvestorAccount = async function (req, res) {
   const data = req.body;
-
+  if (!data.password) {
+    return res
+      .json({
+        msg: "Password Required To Create Investor Account",
+      })
+      .status(401);
+  }
   const hashedpassword = await bcrypt.hash(data.password, SALT);
   let datas = {
     companyName: data.companyName,
@@ -161,20 +167,6 @@ module.exports.CreateInvestorAccount = async function (req, res) {
 module.exports.EditInvestorAccount = wrapAsync(async function (req, res) {
   const data = req.body;
   const { investorId } = req.params;
-  if (
-    !(
-      data.companyName &&
-      data.contact_phone &&
-      data.location &&
-      data.email &&
-      data.contact_person
-    )
-  ) {
-    return res.json({
-      msg: "All inputs are required",
-    });
-  }
-
   let datas = {
     companyName: data.companyName,
     location: data.location,
@@ -182,7 +174,6 @@ module.exports.EditInvestorAccount = wrapAsync(async function (req, res) {
     contact_person: data.contact_person,
     email: data.email,
   };
-
   const data_exists = await Investor.findByIdAndUpdate(investorId, datas, {
     runValidators: true,
   });
@@ -272,10 +263,10 @@ module.exports.getAllInvestors = wrapAsync(async function (req, res) {
 module.exports.CreateDepartment = wrapAsync(async function (req, res) {
   const data = req.body;
 
-  if (!data.title && !data.password) {
+  if (!data.password) {
     res
       .json({
-        msg: "Department data is required",
+        msg: "Department Password is required",
       })
       .status(403);
   }

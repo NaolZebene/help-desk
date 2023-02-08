@@ -10,22 +10,22 @@ const reportSchema = new Schema({
     type: String,
     required: true,
   },
-  total_number_of_workers: {
-    type: Array,
-    required: true,
-  },
+  // total_number_of_workers: {
+  //   type: Array,
+  //   required: true,
+  // },
   cumulative_new_jobs_created: {
     type: String,
     required: true,
   },
-  average_worker_per_month: {
-    type: String,
-    required: true,
-  },
-  number_of_workers_resigned: {
-    type: Array,
-    required: true,
-  },
+  // average_worker_per_month: {
+  //   type: String,
+  //   required: true,
+  // },
+  // number_of_workers_resigned: {
+  //   type: Array,
+  //   required: true,
+  // },
   number_of_workers_hired: {
     type: Array,
     required: true,
@@ -81,6 +81,42 @@ const reportSchema = new Schema({
     type: String,
     default: "investor",
     required: true,
+  },
+  totalMale: {
+    type: Number,
+  },
+  totalFemale: {
+    type: Number,
+  },
+  totalExp: {
+    type: Number,
+  },
+  totalTotal: {
+    type: Number,
+  },
+  hiredMale: {
+    type: Number,
+  },
+  hiredFemale: {
+    type: Number,
+  },
+  hiredExp: {
+    type: Number,
+  },
+  hiredTotal: {
+    type: Number,
+  },
+  firedMale: {
+    type: Number,
+  },
+  firedFemale: {
+    type: Number,
+  },
+  firedExp: {
+    type: Number,
+  },
+  firedTotal: {
+    type: Number,
   },
 });
 

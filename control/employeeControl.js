@@ -1,4 +1,5 @@
 const Task = require("../model/Tasks");
+const mongoose = require("mongoose");
 const User = require("../model/Users");
 const jwt = require("jsonwebtoken");
 const wrapAsync = require("../util/wrapAsync");
@@ -8,6 +9,7 @@ const INV_KEY = "investor";
 
 module.exports.EscalateTask = async function (req, res) {
   const { taskId } = req.params;
+  const data = req.body;
   const task = await Task.findById(taskId);
   if (!task) {
     return res
@@ -19,6 +21,7 @@ module.exports.EscalateTask = async function (req, res) {
 
   task.assignedTo = [];
   task.isEscalated = true;
+  task.escalated_reason = data.reason || "";
 
   await task.save();
 

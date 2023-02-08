@@ -105,7 +105,8 @@ module.exports.AssignTask = wrapAsync(async function (req, res) {
   task.assignedTo.push(user_data);
   task.isAssigned = "accepted";
   task.isEscalated = false;
-  task.priority = data.priority
+  task.priority = data.priority;
+  task.escalated_reason = "";
   await task.save();
   return res
     .json({
@@ -135,6 +136,7 @@ module.exports.DeclineTask = wrapAsync(async function (req, res) {
   task.isAssigned = "canceled";
   task.isEscalated = false;
   task.reason = String(data.reason);
+  task.escalated_reason = "";
   await task.save();
   return res.json({
     msg: "Task declined Successfully",
