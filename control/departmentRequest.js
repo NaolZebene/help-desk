@@ -1,5 +1,7 @@
 const Departments = require("../model/Departments");
 const Task = require("../model/Tasks");
+const jwt = require("jsonwebtoken");
+const SECRET_KEY = "sjskbjdnbhjnbhjcsnskhnjdb";
 
 module.exports.CreateTask = async function (req, res) {
   const data = req.body;
@@ -11,8 +13,10 @@ module.exports.CreateTask = async function (req, res) {
       })
       .status(401);
   }
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, SECRET_KEY);
   let datas = {
-    companyName: data.title,
+    companyName: decodedToken.department,
     description: data.description,
     taskType: data.taskType,
     location: data.location,

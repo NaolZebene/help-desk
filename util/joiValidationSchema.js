@@ -23,7 +23,6 @@ const schema = {
   }),
   investor: joi.object({
     companyName: joi.string().required(),
-    password: joi.string().required(),
     location: joi.string().required(),
     email: joi.string().required(),
     contact_phone: joi.string(),
@@ -31,7 +30,6 @@ const schema = {
   }),
   department: joi.object({
     title: joi.string().required(),
-    password: joi.string().required(),
   }),
   report: joi.object({
     month: joi.string().required(),
@@ -51,6 +49,9 @@ const schema = {
     number_of_trainee: joi.number().required(),
     duration_of_training: joi.string().required(),
     additional_file: joi.string(),
+    challenges: joi.string(),
+    to: joi.string().required(),
+    file: joi.string(),
   }),
   service: joi.object({
     companyName: joi.string().required(),

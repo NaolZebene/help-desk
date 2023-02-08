@@ -43,3 +43,24 @@ module.exports.Login = wrapAsync(async (req, res) => {
     })
     .status(200);
 });
+
+module.exports.VerifyInvestorToken = wrapAsync(async function (req, res) {
+  const token = req.body.token.split(" ")[1];
+  const validToken = jwt.verify(token, SECRET_KEY);
+  if (!validToken) {
+    return res
+      .json({
+        msg: true,
+        payload: {
+          role: validToken.role,
+          name: validToken.name,
+        },
+      })
+      .status(401);
+  }
+  return res
+    .json({
+      msg: false,
+    })
+    .status(200);
+});

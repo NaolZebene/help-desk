@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const departmentRequestController = require("../control/departmentRequest");
 const employeeController = require("../control/employeeControl");
 const { isEmployee } = require("../util/Authorization");
 const isUserAuth = require("../util/isUser-Auth");
@@ -17,5 +18,11 @@ router.get("/profile", isUserAuth, employeeController.ViewProfile);
 router.get("/task", isUserAuth, isEmployee, employeeController.ViewTasks);
 
 router.get("/:empId", isDepAuth, employeeController.DepartmentEmployees);
+
+router.get(
+  "/internalRequest",
+  isUserAuth,
+  departmentRequestController.CreateTask
+);
 
 module.exports = router;
