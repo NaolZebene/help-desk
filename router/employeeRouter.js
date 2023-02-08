@@ -19,7 +19,7 @@ router.get("/task", isUserAuth, isEmployee, employeeController.ViewTasks);
 
 router.get("/:empId", isDepAuth, employeeController.DepartmentEmployees);
 
-router.get(
+router.post(
   "/internalRequest",
   isUserAuth,
   departmentRequestController.CreateTask
