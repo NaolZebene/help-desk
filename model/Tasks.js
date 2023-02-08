@@ -62,7 +62,12 @@ const taskSchema = new Schema(
     escalated_reason: {
       type: String,
     },
+    cancled_reason:{
+      type:String,
+      required:true
+    }
   },
+
   {
     timestamps: true,
   }
