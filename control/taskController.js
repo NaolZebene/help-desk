@@ -228,7 +228,6 @@ module.exports.ViewCompletedTasks = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, INVESTOR_SECRET);
   const companyName = decodedToken.name;
-
   const company = await Task.find({
     companyName: companyName,
     isAssigned: "completed",
@@ -240,3 +239,32 @@ module.exports.ViewCompletedTasks = wrapAsync(async function (req, res) {
     })
     .status(200);
 });
+
+module.exports.CancelRequestToInvestor = wrapAsync(async function(req,res){
+  const {taskId} = req.params;
+  const data = req.body;
+  const task = await Task.findById(taskId); 
+  if(!task){
+    return res.json({
+      msg:"Task not found"
+    }).status(200)
+  }
+  if(!(data.reason)){
+    return res.json({
+      msg:"Reason is required"
+    })
+  }
+  task.cancled_reason = data.reason; 
+  task.isAssigned = "canceled";
+  await task.save();
+})
+
+module.exports.CancledRequestsToInvestor = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, INVESTOR_SECRET)
+  const companyName = decodedToken.name;
+  const canceledRequests = await Task.find({isAssigned:"canceled",companyName: companyName});
+  return res.json({
+    msg:canceledRequests
+  }).status(200)
+})

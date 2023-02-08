@@ -3,6 +3,7 @@ const userController = require("../control/userController");
 const reportController = require("../control/reportController");
 const isDepAuth = require("../util/isDep-Auth");
 const isLoggedIn = require("../util/isUser-Auth");
+const taskController = require("../control/taskController")
 
 const multer = require("multer");
 
@@ -40,6 +41,9 @@ router.get(
   isAdmin,
   userController.getOneInvestor
 );
+
+/**Task */
+router.post("/task/cancel/:taskId",isLoggedIn,isAdmin,taskController.CancelRequestToInvestor);
 
 /**Report View */
 router.get("/report/:companyName", isDepAuth, reportController.viewReports);
