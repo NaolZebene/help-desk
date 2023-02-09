@@ -46,9 +46,9 @@ module.exports.Login = wrapAsync(async (req, res) => {
 });
 
 module.exports.VerifyDepartmentToken = wrapAsync(async function (req, res) {
-  const token = req.body.token.split(" ")[1];
+  const token = req.get("Authorization").split(" ")[1];
   const validToken = jwt.verify(token, SECRET_KEY);
-  if (!validToken) {
+  if (validToken) {
     return res
       .json({
         msg: true,

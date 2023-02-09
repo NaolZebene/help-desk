@@ -10,7 +10,7 @@ router.get("/investor/verifyToken", investorAuthContoller.VerifyInvestorToken);
 
 router.post("/department/login", departmentAuthController.Login);
 router.post("/verifyusertoken", authControl.VerifyUserToken);
-router.post(
+router.get(
   "/department/verifyToken",
   departmentAuthController.VerifyDepartmentToken
 );

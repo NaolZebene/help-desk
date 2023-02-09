@@ -25,7 +25,7 @@ const taskSchema = new Schema(
     },
     isAssigned: {
       type: String,
-      enum: ["pending", "canceled", "accepted", "completed"],
+      enum: ["pending", "canceled", "accepted", "completed", "decline"],
       default: "pending",
     },
     assignedTo: [
@@ -62,10 +62,10 @@ const taskSchema = new Schema(
     escalated_reason: {
       type: String,
     },
-    cancled_reason:{
-      type:String,
-      required:true
-    }
+    cancled_reason: {
+      type: String,
+      // required:true
+    },
   },
 
   {
