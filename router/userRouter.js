@@ -3,7 +3,7 @@ const userController = require("../control/userController");
 const reportController = require("../control/reportController");
 const isDepAuth = require("../util/isDep-Auth");
 const isLoggedIn = require("../util/isUser-Auth");
-const taskController = require("../control/taskController")
+const taskController = require("../control/taskController");
 
 const multer = require("multer");
 
@@ -43,7 +43,12 @@ router.get(
 );
 
 /**Task */
-router.post("/task/cancel/:taskId",isLoggedIn,isAdmin,taskController.CancelRequestToInvestor);
+router.post(
+  "/task/cancel/:taskId",
+  isLoggedIn,
+  isAdmin,
+  taskController.CancelRequestToInvestor
+);
 
 /**Report View */
 router.get("/report/:companyName", isDepAuth, reportController.viewReports);
@@ -57,7 +62,7 @@ router.get("/", isDepAuth, isDepartment, userController.getAllUsers);
 /**Investor account */
 router.post(
   "/investor/post",
-  addInvestorValidation,
+  // addInvestorValidation,
   userController.CreateInvestorAccount
 );
 router.get("/investor", userController.getAllInvestors);
@@ -71,7 +76,7 @@ router.post("/investor/:investorId", userController.DeleteInvestor);
 /**Department account */
 router.post(
   "/department/post",
-  addDepartmentValidation,
+  // addDepartmentValidation,
   userController.CreateDepartment
 );
 router.get("/department", userController.GetDepartments);
