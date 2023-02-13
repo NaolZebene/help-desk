@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const SECRET_KEY = "sjskbjdnbhjnbhjcsnskhnjdb";
 const wrapAsync = require("../util/wrapAsync");
 const sendEmail = require("../util/sendEmail");
+const Token = require("../model/Token");
+const SALT = 12;
 
 module.exports.Login = wrapAsync(async (req, res) => {
   const data = req.body;
@@ -80,6 +82,7 @@ module.exports.resetPassword = async function (req, res) {
       .status(200);
   }
   let token = await Token.findOne({ userId: user._id });
+  console.log(token);
   if (!token) {
     let data = {
       userId: user._id,
@@ -88,7 +91,7 @@ module.exports.resetPassword = async function (req, res) {
     token = new Token(data);
     await token.save();
   }
-  const link = `http://localhost:8080/auth/passwordreset/${user._id}/${token.token}`;
+  const link = `http://localhost:3000/auth/passwordreset/${user._id}/${token.token}`;
   await sendEmail(
     user.email,
     "ICTHD PASSWORD RESET",
