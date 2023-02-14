@@ -6,6 +6,7 @@ const wrapAsync = require("../util/wrapAsync");
 const SECRET_KEY = "sjskbjdnbhjnbhjcsnskhnjdb";
 const DEP_KEY = "department";
 const INV_KEY = "investor";
+const underscore = require('underscore')
 
 module.exports.EscalateTask = async function (req, res) {
   const { taskId } = req.params;
@@ -19,7 +20,7 @@ module.exports.EscalateTask = async function (req, res) {
       .status(403);
   }
 
-  task.assignedTo = [];
+
   task.isEscalated = true;
   task.escalated_reason = data.reason || "";
 
@@ -55,9 +56,11 @@ module.exports.ViewTasks = async (req, res) => {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, SECRET_KEY);
   const tasks = await Task.find({ assignedTo: { $in: decodedToken.id } });
+  const sorted_by_ticket = underscore.sortBy(tasks,"ticketNumber"); 
+  const sorted_by_priority = underscore.sortBy(sorted_by_ticket, "priority")
   return res
     .json({
-      msg: tasks,
+      msg: sorted_by_priority,
     })
     .status(200);
 };

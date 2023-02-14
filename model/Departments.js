@@ -6,6 +6,10 @@ const departmentSchema = new Schema({
     type: String,
     required: true,
   },
+  email:{
+    type:String, 
+    required:true
+  },
   services: [
     {
       type: mongoose.Types.ObjectId,

@@ -7,11 +7,12 @@ const Departments = require("../model/Departments");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "department";
 const INVESTOR_SECRET = "investor";
+const underscore = require('underscore')
+
 
 module.exports.CreateTask = async function (req, res) {
   const data = req.body;
   const dep = await Departments.findOne({ title: data.department });
-
   if (!dep) {
     return res
       .json({
@@ -19,6 +20,7 @@ module.exports.CreateTask = async function (req, res) {
       })
       .status(401);
   }
+  const ticket_number = Date.now();
   let datas = {
     companyName: data.companyName,
     description: data.description,
@@ -28,6 +30,7 @@ module.exports.CreateTask = async function (req, res) {
     contact_person_phone: data.contact_person_phone,
     contact_person_name: data.contact_person_name,
     requested_date: data.requested_date,
+    ticketNumber:ticket_number
   };
   const task = new Task(datas);
   task.department = dep;
@@ -105,7 +108,6 @@ module.exports.AssignTask = wrapAsync(async function (req, res) {
   task.assignedTo.push(user_data);
   task.isAssigned = "accepted";
   task.isEscalated = false;
-  task.priority = data.priority;
   task.escalated_reason = "";
   await task.save();
   return res
@@ -280,3 +282,117 @@ module.exports.CancledRequestsToInvestor = wrapAsync(async function (req, res) {
     })
     .status(200);
 });
+
+module.exports.SetPriority = wrapAsync(async function(req,res){
+  const data = req.body.priority
+  const {id} = req.params
+  const task = await Task.findById(id)
+
+  if(!task){
+    return res.json({
+      msg:"No such task found"
+    }).status(200)
+  }
+  if(data == 1 || data == 2 || data == 3){
+    task.priority = data
+    await task.save();
+    return res.json({
+      msg:"Prioity Set"
+    }).status(200)
+  }
+  return res.json({
+    msg:"No such priority"
+  }).status(401)
+
+})
+
+module.exports.getYearlyData = wrapAsync(async function(req,res){
+  const task = await Task.find()
+  const data = underscore.groupBy(task, 'date')
+  const keys = Object.keys(data)
+  let payload = {}
+  keys.forEach((d)=>{
+    year = d.split("-")[0]
+    month = d.split("-")[1]
+    curr = String(new Date().getFullYear())
+    if(year == curr){
+      payload[month] = data[d]
+    }
+  })
+
+  return res.json({
+    msg:payload
+  }).status(200)
+
+})
+
+module.exports.GetRating = wrapAsync(async function(req,res){
+  const {id} = req.params;
+  const data = req.data.rating
+  if(!data){
+    return res.json({
+      msg:"Rating is Required"
+    }).status(401)
+  }
+  const employee = await User.findById(id);
+  if(!employee){
+    return res.json({
+      msg:"No such employee"
+    }).status(401)
+  }
+  employee.rating = ((employee.rating + data)/2);
+  await employee.save()
+  return res.json({
+    msg:"Rated Sucessfully"
+  }).status(200)
+})  
+
+
+module.exports.getDepartmentYearlyData = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, SECRET_KEY);
+  const departmentName = decodedToken.id;
+  const task = await Task.find({department:departmentName})
+
+  const data = underscore.groupBy(task, 'date')
+  const keys = Object.keys(data)
+  let payload = {}
+  keys.forEach((d)=>{
+    year = d.split("-")[0]
+    month = d.split("-")[1]
+    curr = String(new Date().getFullYear())
+    if(year == curr){
+      payload[month] = data[d]
+    }
+  })
+
+  return res.json({
+    msg:payload
+  }).status(200)
+
+})
+
+module.exports.getInvestorYearlyData = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, INVESTOR_SECRET);
+  const companyName = decodedToken.id;
+  const task = await Task.find({companyName:companyName})
+
+  const data = underscore.groupBy(task, 'date')
+  const keys = Object.keys(data)
+  let payload = {}
+  keys.forEach((d)=>{
+    year = d.split("-")[0]
+    month = d.split("-")[1]
+    curr = String(new Date().getFullYear())
+    if(year == curr){
+      payload[month] = data[d]
+    }
+  })
+
+  return res.json({
+    msg:payload
+  }).status(200)
+
+})
+

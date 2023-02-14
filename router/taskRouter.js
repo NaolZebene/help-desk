@@ -19,6 +19,7 @@ router.get(
   taskController.CancledRequestsToInvestor
 );
 router.get("/", taskController.GetTask);
+router.get("/getannualrequest", taskController.getYearlyData)
 router.get("/allhistory", isDepAuth, taskController.AllHistory);
 router.get("/completedtasks", isInvAuth, taskController.ViewCompletedTasks);
 router.post("/post", isInvAuth, taskController.CreateTask);
@@ -29,6 +30,7 @@ router.post(
   isDepartment,
   taskController.DeclineTask
 );
+router.post("/:id/priority", taskController.SetPriority)
 router.post(
   "/:taskId/:userId",
   isDepAuth,

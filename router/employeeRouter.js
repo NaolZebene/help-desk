@@ -5,6 +5,7 @@ const { isEmployee } = require("../util/Authorization");
 const isUserAuth = require("../util/isUser-Auth");
 const isInvAuth = require("../util/isInv-Auth");
 const isDepAuth = require("../util/isDep-Auth");
+const taskController = require("../control/taskController")
 
 router.post(
   "/escalate/:taskId",
@@ -24,5 +25,7 @@ router.post(
   isUserAuth,
   departmentRequestController.CreateTask
 );
+
+router.post("/:id/rating", taskController.GetRating);
 
 module.exports = router;

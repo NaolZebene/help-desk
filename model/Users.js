@@ -34,6 +34,10 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  rating:{
+    type:Number,
+    default:5
+  }
 });
 
 const User = model("User", userSchema);

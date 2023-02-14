@@ -7,6 +7,10 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
+    ticketNumber:{
+      type:String, 
+      required:true
+    },
     description: {
       type: String,
       required: true,
