@@ -15,12 +15,14 @@ module.exports.CreateTask = async function (req, res) {
   }
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, SECRET_KEY);
+  const ticket_number = Date.now();
   let datas = {
     companyName: decodedToken.department,
     description: data.description,
     taskType: data.taskType,
     location: data.location,
     requested_date: data.requested_date,
+    ticketNumber: ticket_number,
   };
   const task = new Task(datas);
   task.department = dep;

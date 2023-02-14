@@ -7,9 +7,9 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
-    ticketNumber:{
-      type:String, 
-      required:true
+    ticketNumber: {
+      type: String,
+      // required: true,
     },
     description: {
       type: String,
@@ -32,12 +32,10 @@ const taskSchema = new Schema(
       enum: ["pending", "canceled", "accepted", "completed", "decline"],
       default: "pending",
     },
-    assignedTo: [
-      {
-        type: mongoose.Types.ObjectId,
-        ref: "Users",
-      },
-    ],
+    assignedTo: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    },
     isDeleted: {
       type: Boolean,
       default: false,

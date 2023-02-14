@@ -7,8 +7,7 @@ const Departments = require("../model/Departments");
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "department";
 const INVESTOR_SECRET = "investor";
-const underscore = require('underscore')
-
+const underscore = require("underscore");
 
 module.exports.CreateTask = async function (req, res) {
   const data = req.body;
@@ -30,7 +29,7 @@ module.exports.CreateTask = async function (req, res) {
     contact_person_phone: data.contact_person_phone,
     contact_person_name: data.contact_person_name,
     requested_date: data.requested_date,
-    ticketNumber:ticket_number
+    ticketNumber: ticket_number,
   };
   const task = new Task(datas);
   task.department = dep;
@@ -104,8 +103,7 @@ module.exports.AssignTask = wrapAsync(async function (req, res) {
       })
       .status(403);
   }
-  task.assignedTo = [];
-  task.assignedTo.push(user_data);
+  task.assignedTo = user_data._id;
   task.isAssigned = "accepted";
   task.isEscalated = false;
   task.escalated_reason = "";
@@ -163,18 +161,23 @@ module.exports.getOneTask = wrapAsync(async function (req, res) {
     .status(200);
 });
 
-module.exports.DepartmentEscalatedTasks = wrapAsync(async function (req, res) {
+module.exports.DepartmentEscalatedTasks = async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, SECRET_KEY);
   const id = decodedToken.id;
-  const escalatedTasks = await Task.find({ department: id, isEscalated: true });
+  const escalatedTasks = await Task.find({
+    department: id,
+    isEscalated: true,
+  }).populate("assignedTo");
+
+  console.log(escalatedTasks);
 
   return res
     .json({
       msg: escalatedTasks,
     })
     .status(200);
-});
+};
 
 module.exports.ViewSentTask = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
@@ -283,116 +286,129 @@ module.exports.CancledRequestsToInvestor = wrapAsync(async function (req, res) {
     .status(200);
 });
 
-module.exports.SetPriority = wrapAsync(async function(req,res){
-  const data = req.body.priority
-  const {id} = req.params
-  const task = await Task.findById(id)
+module.exports.SetPriority = wrapAsync(async function (req, res) {
+  const data = req.body.priority;
+  console.log(req.body);
+  const { id } = req.params;
+  const task = await Task.findById(id);
 
-  if(!task){
-    return res.json({
-      msg:"No such task found"
-    }).status(200)
+  if (!task) {
+    return res
+      .json({
+        msg: "No such task found",
+      })
+      .status(200);
   }
-  if(data == 1 || data == 2 || data == 3){
-    task.priority = data
+  if (data == 1 || data == 2 || data == 3) {
+    task.priority = data;
     await task.save();
-    return res.json({
-      msg:"Prioity Set"
-    }).status(200)
+    return res
+      .json({
+        msg: "Prioity Set",
+      })
+      .status(200);
   }
-  return res.json({
-    msg:"No such priority"
-  }).status(401)
+  return res
+    .json({
+      msg: "No such priority",
+    })
+    .status(401);
+});
 
-})
-
-module.exports.getYearlyData = wrapAsync(async function(req,res){
-  const task = await Task.find()
-  const data = underscore.groupBy(task, 'date')
-  const keys = Object.keys(data)
-  let payload = {}
-  keys.forEach((d)=>{
-    year = d.split("-")[0]
-    month = d.split("-")[1]
-    curr = String(new Date().getFullYear())
-    if(year == curr){
-      payload[month] = data[d]
+module.exports.getYearlyData = wrapAsync(async function (req, res) {
+  const task = await Task.find();
+  const data = underscore.groupBy(task, "date");
+  const keys = Object.keys(data);
+  let payload = {};
+  keys.forEach((d) => {
+    year = d.split("-")[0];
+    month = d.split("-")[1];
+    curr = String(new Date().getFullYear());
+    if (year == curr) {
+      payload[month] = data[d];
     }
-  })
+  });
 
-  return res.json({
-    msg:payload
-  }).status(200)
+  return res
+    .json({
+      msg: payload,
+    })
+    .status(200);
+});
 
-})
-
-module.exports.GetRating = wrapAsync(async function(req,res){
-  const {id} = req.params;
-  const data = req.data.rating
-  if(!data){
-    return res.json({
-      msg:"Rating is Required"
-    }).status(401)
+module.exports.GetRating = wrapAsync(async function (req, res) {
+  const { id } = req.params;
+  const data = req.data.rating;
+  if (!data) {
+    return res
+      .json({
+        msg: "Rating is Required",
+      })
+      .status(401);
   }
   const employee = await User.findById(id);
-  if(!employee){
-    return res.json({
-      msg:"No such employee"
-    }).status(401)
+  if (!employee) {
+    return res
+      .json({
+        msg: "No such employee",
+      })
+      .status(401);
   }
-  employee.rating = ((employee.rating + data)/2);
-  await employee.save()
-  return res.json({
-    msg:"Rated Sucessfully"
-  }).status(200)
-})  
+  employee.rating = (employee.rating + data) / 2;
+  await employee.save();
+  return res
+    .json({
+      msg: "Rated Sucessfully",
+    })
+    .status(200);
+});
 
-
-module.exports.getDepartmentYearlyData = wrapAsync(async function(req,res){
+module.exports.getDepartmentYearlyData = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, SECRET_KEY);
   const departmentName = decodedToken.id;
-  const task = await Task.find({department:departmentName})
+  const task = await Task.find({ department: departmentName });
 
-  const data = underscore.groupBy(task, 'date')
-  const keys = Object.keys(data)
-  let payload = {}
-  keys.forEach((d)=>{
-    year = d.split("-")[0]
-    month = d.split("-")[1]
-    curr = String(new Date().getFullYear())
-    if(year == curr){
-      payload[month] = data[d]
+  const data = underscore.groupBy(task, "date");
+  const keys = Object.keys(data);
+  let payload = {};
+  keys.forEach((d) => {
+    year = d.split("-")[0];
+    month = d.split("-")[1];
+    curr = String(new Date().getFullYear());
+    if (year == curr) {
+      payload[month] = data[d];
     }
-  })
+  });
 
-  return res.json({
-    msg:payload
-  }).status(200)
+  return res
+    .json({
+      msg: payload,
+    })
+    .status(200);
+});
 
-})
-
-module.exports.getInvestorYearlyData = wrapAsync(async function(req,res){
+module.exports.getInvestorYearlyData = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, INVESTOR_SECRET);
   const companyName = decodedToken.id;
-  const task = await Task.find({companyName:companyName})
+  const task = await Task.find({ companyName: companyName });
 
-  const data = underscore.groupBy(task, 'date')
-  const keys = Object.keys(data)
-  let payload = {}
-  keys.forEach((d)=>{
-    year = d.split("-")[0]
-    month = d.split("-")[1]
-    curr = String(new Date().getFullYear())
-    if(year == curr){
-      payload[month] = data[d]
+  const data = underscore.groupBy(task, "date");
+  const keys = Object.keys(data);
+  let payload = {};
+  keys.forEach((d) => {
+    year = d.split("-")[0];
+    month = d.split("-")[1];
+    curr = String(new Date().getFullYear());
+    if (year == curr) {
+      payload[month] = data[d];
     }
-  })
+  });
 
-  return res.json({
-    msg:payload
-  }).status(200)
-
-})
-
+  return res
+    .json({
+      msg: payload,
+    })
+    .status(200);
+});

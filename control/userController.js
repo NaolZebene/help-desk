@@ -125,6 +125,7 @@ module.exports.getAllUsers = wrapAsync(async function (req, res) {
       lastname: user.lastName,
       role: user.role,
       email: user.email,
+      rating: user.rating,
     };
     data.push(datas);
   });
@@ -275,7 +276,7 @@ module.exports.CreateDepartment = wrapAsync(async function (req, res) {
   const datas = {
     title: data.title,
     password: hashedpassword,
-    email:data.email
+    email: data.email,
   };
 
   const newDepartment = new Department(datas);
@@ -302,7 +303,7 @@ module.exports.EditDepartment = wrapAsync(async function (req, res) {
 
   const datas = {
     title: data.title,
-    email:data.email
+    email: data.email,
   };
 
   const data_exists = await Department.findByIdAndUpdate(depId, datas, {
