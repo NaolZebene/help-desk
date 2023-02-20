@@ -338,7 +338,8 @@ module.exports.getYearlyData = wrapAsync(async function (req, res) {
 
 module.exports.GetRating = wrapAsync(async function (req, res) {
   const { id } = req.params;
-  const data = req.data.rating;
+  const data = req.body.rating;
+  console.log(data);
   if (!data) {
     return res
       .json({
