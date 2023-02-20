@@ -18,10 +18,10 @@ const reportSchema = new Schema({
     type: String,
     required: true,
   },
-  // average_worker_per_month: {
-  //   type: String,
-  //   required: true,
-  // },
+  average_worker_per_month: {
+    type: String,
+    required: true,
+  },
   // number_of_workers_resigned: {
   //   type: Array,
   //   required: true,
