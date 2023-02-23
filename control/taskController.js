@@ -317,7 +317,7 @@ module.exports.SetPriority = wrapAsync(async function (req, res) {
 
 module.exports.getYearlyData = wrapAsync(async function (req, res) {
   const task = await Task.find();
-  const data = underscore.groupBy(task, "date");
+  const data = underscore.groupBy(task, "requested_date");
   const keys = Object.keys(data);
   let payload = {};
   keys.forEach((d) => {
@@ -364,13 +364,12 @@ module.exports.GetRating = wrapAsync(async function (req, res) {
     .status(200);
 });
 
-module.exports.getDepartmentYearlyData = wrapAsync(async function (req, res) {
+module.exports.getDepartmentYearlyData = async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, SECRET_KEY);
   const departmentName = decodedToken.id;
   const task = await Task.find({ department: departmentName });
-
-  const data = underscore.groupBy(task, "date");
+  const data = underscore.groupBy(task, "requested_date");
   const keys = Object.keys(data);
   let payload = {};
   keys.forEach((d) => {
@@ -387,15 +386,14 @@ module.exports.getDepartmentYearlyData = wrapAsync(async function (req, res) {
       msg: payload,
     })
     .status(200);
-});
+};
 
 module.exports.getInvestorYearlyData = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, INVESTOR_SECRET);
-  const companyName = decodedToken.id;
+  const companyName = decodedToken.name;
   const task = await Task.find({ companyName: companyName });
-
-  const data = underscore.groupBy(task, "date");
+  const data = underscore.groupBy(task, "requested_date");
   const keys = Object.keys(data);
   let payload = {};
   keys.forEach((d) => {
