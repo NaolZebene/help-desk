@@ -3,11 +3,18 @@ const path = require("path");
 const Clients = require("../model/Clients");
 
 module.exports.CreateClients = async function (req, res) {
+  if (!req.body.title) {
+    return res.json({
+      msg: "Client name is required",
+    });
+  }
+
   if (!req.file) {
     return res.json({
       msg: "Logo Required",
     });
   }
+
   const logo = req.file.path;
   const name = req.body.title;
   const new_data = {
@@ -27,12 +34,18 @@ module.exports.EditClients = async function (req, res) {
   const name = req.body.title;
   let logo = req.body.logo;
 
+  if (!req.body.title) {
+    return res.json({
+      msg: "Client name is required",
+    });
+  }
+
   if (req.file) {
     logo = req.file.path;
   }
   if (!logo) {
     return res.json({
-      msg: "image Required",
+      msg: "Logo is Required",
     });
   }
 
@@ -100,7 +113,7 @@ module.exports.deleteClients = async function (req, res) {
     });
   }
   client.isDeleted = true;
-  await client.save()
+  await client.save();
   return res.json({
     msg: "Client Deleted Successfully",
   });

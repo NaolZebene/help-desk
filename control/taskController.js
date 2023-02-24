@@ -11,6 +11,25 @@ const underscore = require("underscore");
 
 module.exports.CreateTask = async function (req, res) {
   const data = req.body;
+  if (
+    !(
+      data.companyName &&
+      data.description &&
+      data.priority &&
+      data.taskType &&
+      data.location &&
+      data.contact_person_phone &&
+      data.contact_person_name &&
+      data.requested_date
+    )
+  ) {
+    return res
+      .json({
+        msg: "All input is Required",
+      })
+      .status(401);
+  }
+
   const dep = await Departments.findOne({ title: data.department });
   if (!dep) {
     return res

@@ -9,13 +9,18 @@ module.exports.SubmitReport = async function (req, res) {
   const companyName = decodedToken.name;
 
   const incoming = req.body;
+
+  if (!req.file) {
+    return res.json({
+      msg: "image is Required",
+    });
+  }
+
   const additional_file = req.file.path;
-  // console.log(typeof incoming);
 
   const all_data = {
     month: incoming.month,
     companyName: incoming.companyName,
-    // total_number_of_worker: incoming.total_number_of_worker,
     totalMale: incoming.totalMale,
     totalFemale: incoming.totalFemale,
     totalExp: incoming.totalExp,
@@ -30,8 +35,6 @@ module.exports.SubmitReport = async function (req, res) {
     firedTotal: incoming.firedTotal,
     cumulative_new_jobs_created: incoming.cumulative_new_jobs_created,
     average_worker_per_month: incoming.average_worker_per_month,
-    // number_of_workers_resigned: incoming.number_of_workers_resigned,
-    // number_of_workers_hired: incoming.number_of_workers_hired,
     turn_over_rate: incoming.turn_over_rate,
     job_creation: incoming.job_creation,
     planned_monthly_report: incoming.planned_monthly_report,
@@ -44,10 +47,8 @@ module.exports.SubmitReport = async function (req, res) {
     additional_file: additional_file,
     challenges: incoming.challenges,
     to: incoming.departmentName,
-    // imageURL: "reportFiles/1.jpg",
   };
 
-  console.log(all_data);
   const newReport = new Report(all_data);
   await newReport.save();
   return res

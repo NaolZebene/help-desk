@@ -11,6 +11,15 @@ const underscore = require("underscore");
 module.exports.EscalateTask = async function (req, res) {
   const { taskId } = req.params;
   const data = req.body;
+
+  if (!data.reason) {
+    return res
+      .json({
+        msg: "Please enter the reason",
+      })
+      .status(403);
+  }
+
   const task = await Task.findById(taskId);
   if (!task) {
     return res

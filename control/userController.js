@@ -138,10 +138,19 @@ module.exports.getAllUsers = wrapAsync(async function (req, res) {
 
 module.exports.CreateInvestorAccount = async function (req, res) {
   const data = req.body;
-  if (!data.password) {
+  if (
+    !(
+      data.companyName &&
+      data.location &&
+      data.contact_phone &&
+      data.contact_person &&
+      data.email &&
+      data.password
+    )
+  ) {
     return res
       .json({
-        msg: "Password Required To Create Investor Account",
+        msg: "All inputs are required",
       })
       .status(401);
   }
@@ -168,6 +177,21 @@ module.exports.CreateInvestorAccount = async function (req, res) {
 module.exports.EditInvestorAccount = wrapAsync(async function (req, res) {
   const data = req.body;
   const { investorId } = req.params;
+  if (
+    !(
+      data.companyName &&
+      data.location &&
+      data.contact_phone &&
+      data.contact_person &&
+      data.email
+    )
+  ) {
+    return res
+      .json({
+        msg: "All inputs are required",
+      })
+      .status(401);
+  }
   let datas = {
     companyName: data.companyName,
     location: data.location,
@@ -264,10 +288,10 @@ module.exports.getAllInvestors = wrapAsync(async function (req, res) {
 module.exports.CreateDepartment = wrapAsync(async function (req, res) {
   const data = req.body;
 
-  if (!data.password) {
-    res
+  if (!(data.email && data.title && data.password)) {
+    return res
       .json({
-        msg: "Department Password is required",
+        msg: "All inputs are required",
       })
       .status(403);
   }
@@ -293,10 +317,10 @@ module.exports.EditDepartment = wrapAsync(async function (req, res) {
   const data = req.body;
   const { depId } = req.params;
 
-  if (!data.title) {
-    res
+  if (!(data.email && data.title)) {
+    return res
       .json({
-        msg: "Department data is required",
+        msg: "All inputs are required",
       })
       .status(403);
   }
@@ -417,6 +441,7 @@ module.exports.getOneDepartment = wrapAsync(async function (req, res) {
     title: depDetail.title,
     services: depDetail.services,
     role: depDetail.role,
+    email: depDetail.email,
   };
 
   return res

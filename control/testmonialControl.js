@@ -3,6 +3,14 @@ const wrapAsync = require("../util/wrapAsync");
 
 module.exports.CreateTestimonials = async function (req, res) {
   const data = req.body;
+  if (!(data.author && data.description && data.company)) {
+    return res
+      .json({
+        msg: "All inputs are required",
+      })
+      .status(401);
+  }
+
   const new_testimonial = new Testimonial(data);
   await new_testimonial.save();
   return res
@@ -15,6 +23,14 @@ module.exports.CreateTestimonials = async function (req, res) {
 module.exports.EditTestimonials = wrapAsync(async function (req, res) {
   const { id } = req.params;
   const data = req.body;
+  if (!(data.author && data.description && data.company)) {
+    return res
+      .json({
+        msg: "All inputs are required",
+      })
+      .status(401);
+  }
+
   const updatedData = await Testimonial.findByIdAndUpdate(id, data, {
     runValidators: true,
   });

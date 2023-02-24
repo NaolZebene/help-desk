@@ -7,11 +7,23 @@ const wrapAsync = require("../util/wrapAsync");
 const mongoose = require("mongoose");
 
 module.exports.CreateServices = wrapAsync(async function (req, res) {
-  const title = req.body.title;
-  const description = req.body.description;
-  const dep = req.body.department;
+  const data = req.body;
+
+  if (!(data.title && data.description && data.department)) {
+    return res.json({
+      msg: "All input is required",
+    });
+  }
+
+  if (!req.file) {
+    return res.json({
+      msg: "icon Required",
+    });
+  }
+
   const icon = req.file.path;
-  const department = await Department.findOne({ title: dep });
+
+  const department = await Department.findOne({ title: data.department });
   if (!department) {
     return res
       .json({
@@ -21,8 +33,8 @@ module.exports.CreateServices = wrapAsync(async function (req, res) {
   }
 
   let new_data = {
-    title: title,
-    description: description,
+    title: data.title,
+    description: data.description,
     department: department,
     icon: icon,
   };
@@ -40,14 +52,18 @@ module.exports.CreateServices = wrapAsync(async function (req, res) {
 });
 
 module.exports.EditServices = async function (req, res) {
+  const data = req.body;
   const { id } = req.params;
 
-  const title = req.body.title;
-  const description = req.body.description;
-  const dep = req.body.department;
-  let icon = req.body.icon;
+  if (!(data.title && data.description && data.department)) {
+    return res.json({
+      msg: "All input is required",
+    });
+  }
 
-  const department = await Department.findOne({ title: dep });
+  let icon = data.icon;
+
+  const department = await Department.findOne({ title: data.department });
   if (!department) {
     return res
       .json({
@@ -61,7 +77,7 @@ module.exports.EditServices = async function (req, res) {
   }
   if (!icon) {
     return res.json({
-      msg: "image Required",
+      msg: "Icon Required",
     });
   }
 
@@ -80,8 +96,8 @@ module.exports.EditServices = async function (req, res) {
   }
 
   let new_data = {
-    title: title,
-    description: description,
+    title: data.title,
+    description: data.description,
     department: department,
     icon: icon,
   };
