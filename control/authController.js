@@ -99,7 +99,7 @@ module.exports.resetPassword = async function (req, res) {
   );
   return res
     .json({
-      msg: "Reset Password link is sent Successfully",
+      msg: "Reset Password link is sent Via Email Successfully",
     })
     .status(200);
 };

@@ -4,6 +4,8 @@ const SECRET_KEY = "department";
 const bcrypt = require("bcrypt");
 const wrapAsync = require("../util/wrapAsync");
 const sendEmail = require("../util/sendEmail");
+const Token = require("../model/Token");
+const SALT = 12;
 
 module.exports.Login = wrapAsync(async (req, res) => {
   const data = req.body;
@@ -86,7 +88,7 @@ module.exports.resetPassword = async function (req, res) {
     token = new Token(data);
     await token.save();
   }
-  const link = `http://localhost:8080/auth/department/passwordreset/${user._id}/${token.token}`;
+  const link = `http://localhost:3000/auth/department/passwordreset/${user._id}/${token.token}`;
   await sendEmail(
     user.email,
     "ICTHD PASSWORD RESET",
@@ -94,7 +96,7 @@ module.exports.resetPassword = async function (req, res) {
   );
   return res
     .json({
-      msg: "Reset Password link is sent Successfully",
+      msg: "Reset Password link is sent Via Email Successfully",
     })
     .status(200);
 };
