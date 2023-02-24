@@ -17,8 +17,11 @@ router.get(
 
 router.post("/forgetpassword", authControl.resetPassword);
 router.post("/passwordreset/:userId/:token", authControl.changeForgetPassword);
-router.get("/department/passwordreset", departmentAuthController.resetPassword);
-router.get(
+router.post(
+  "/department/passwordreset",
+  departmentAuthController.resetPassword
+);
+router.post(
   "/department/passwordreset/:userId/:token",
   departmentAuthController.changeForgetPassword
 );
