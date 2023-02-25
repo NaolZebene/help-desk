@@ -69,7 +69,9 @@ const investorRouter = require("./router/investorRouter");
 const departmentRouter = require("./router/departmentRouter");
 const testimonialRouter = require("./router/testimonialRouter");
 const clientRouter = require("./router/clientRouter");
+const homeRouter = require("./router/homeRouter")
 
+app.use("/home", homeRouter)
 app.use("/auth", authRouter);
 app.use("/task", taskRouter);
 app.use("/user", userRouter);
