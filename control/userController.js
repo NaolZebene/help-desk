@@ -7,6 +7,7 @@ const User = require("../model/Users");
 const bcrypt = require("bcrypt");
 const SALT = 12;
 const SECRET_KEY = "department";
+const INVSECRET = "investor"
 
 const wrapAsync = require("../util/wrapAsync");
 
@@ -450,3 +451,55 @@ module.exports.getOneDepartment = wrapAsync(async function (req, res) {
     })
     .status(200);
 });
+
+module.exports.getDepartmentDashboardData = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, SECRET_KEY);
+  const employees = await User.count({department: decodedToken.name})
+  const request = await Task.count({department:decodedToken.id})
+  const canceled = await Task.count({isAssigned:"decline",department:decodedToken.id})
+  const completed = await Task.count({isAssigned:"completed", department:decodedToken.id})
+  const data = {
+    total_employees:employees,
+    totalrequest:request,
+    canceled:canceled,
+    completed:completed
+  }
+
+  return res.json({
+    msg:data
+  }).status(200)
+})
+
+module.exports.getSuperAdminDashboardData = wrapAsync(async function(req,res){
+  const employees = await User.count({})
+  const request = await Task.count({})
+  const canceled = await Task.count({isAssigned:"decline"})
+  const completed = await Task.count({isAssigned:"completed"})
+  const data = {
+    total_employees:employees,
+    totalrequest:request,
+    canceled:canceled,
+    completed:completed
+  }
+
+  return res.json({
+    msg:data
+  }).status(200)
+})
+
+module.exports.getInvestorDashboardData = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, "investor");
+  const request = await Task.count({companyName:decodedToken.name})
+  const completed = await Task.count({isAssigned:"completed",companyName:decodedToken.name})
+
+  const data = {
+    totalrequest:request,
+    completed:completed
+  }
+
+  return res.json({
+    msg:data
+  }).status(200)
+})

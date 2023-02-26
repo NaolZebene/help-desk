@@ -3,11 +3,16 @@ const authControl = require("../control/authController");
 const investorAuthContoller = require("../control/investorAuthContoller");
 const departmentAuthController = require("../control/departmentAuthController");
 
-//*user login//
+router.post("/changepassword",authControl.ChangePassword)
 router.post("/login", authControl.Login);
+
+router.post("/investor/changepassword",investorAuthContoller.ChangePassword)
 router.post("/investor/login", investorAuthContoller.Login);
 router.get("/investor/verifyToken", investorAuthContoller.VerifyInvestorToken);
+router.post("/investor/forgetpassword", investorAuthContoller.resetPassword);
+router.post("/investor/passwordreset/:userId/:token", investorAuthContoller.changeForgetPassword)
 
+router.post("/department/changepassword",departmentAuthController.ChangePassword)
 router.post("/department/login", departmentAuthController.Login);
 router.post("/verifyusertoken", authControl.VerifyUserToken);
 router.get(

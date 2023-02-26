@@ -38,8 +38,6 @@ module.exports.Login = wrapAsync(async (req, res) => {
       expiresIn: "24h",
     }
   );
-  req.session.token = token;
-  req.session.user = user;
 
   return res
     .json({
@@ -103,6 +101,8 @@ module.exports.resetPassword = async function (req, res) {
     })
     .status(200);
 };
+
+
 module.exports.changeForgetPassword = async function (req, res) {
   const { token, userId } = req.params;
   const user = await User.findById(userId);
@@ -141,3 +141,33 @@ module.exports.changeForgetPassword = async function (req, res) {
     msg: "Password Changed Successfully",
   });
 };
+
+
+module.exports.ChangePassword = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+ const validToken = jwt.verify(token, SECRET_KEY);
+ const {oldpassword, confirmoldpassword, new_password} = req.body;
+ if (oldpassword != confirmoldpassword){
+   return res.json({
+     msg:"Password Must Match"
+   }).status(200)
+ }
+ const user = await User.findById(validToken.id);
+ if(!user){
+   return res.json({
+     msg:"No such user "
+   }).status(401)
+ }
+ const correctold = await bcrypt.compare(oldpassword,user.password)
+ if(!correctold){
+   return res.json({
+     msg:"Incorrect old password"
+   }).status(200)
+ }
+ const new_pass = await bcrypt.hash(new_password, SALT);
+ user.password = new_pass;
+ await user.save();
+ return res.json({
+   msg:"Password Changed Successfully"
+ }).status(200)
+})

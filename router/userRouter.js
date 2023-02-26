@@ -2,6 +2,7 @@ const router = require("express").Router();
 const userController = require("../control/userController");
 const reportController = require("../control/reportController");
 const isDepAuth = require("../util/isDep-Auth");
+const isInvAuth = require("../util/isInv-Auth")
 const isLoggedIn = require("../util/isUser-Auth");
 const taskController = require("../control/taskController");
 
@@ -27,6 +28,9 @@ const {
 const serviceController = require("../control/serviceController");
 const { isAdmin, isDepartment } = require("../util/Authorization");
 
+
+router.get("/dashboarddata",isLoggedIn,isAdmin,userController.getSuperAdminDashboardData)
+
 // Details
 router.get(
   "/department/details/:depid",
@@ -51,6 +55,7 @@ router.post(
 );
 
 /**Report View */
+router.get("/department/dashboarddata",isDepAuth, userController.getDepartmentDashboardData)
 router.get("/report/:companyName", isDepAuth, reportController.viewReports);
 
 /**user account */
@@ -65,6 +70,7 @@ router.post(
   // addInvestorValidation,
   userController.CreateInvestorAccount
 );
+router.get("/investor/dashboarddata",isInvAuth, userController.getInvestorDashboardData)
 router.get("/investor", userController.getAllInvestors);
 router.put(
   "/investor/:investorId",
@@ -109,5 +115,7 @@ router.get(
   isAdmin,
   userController.AssignToDepartment
 );
+
+
 
 module.exports = router;
