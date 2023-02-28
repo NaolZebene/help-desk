@@ -48,6 +48,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use("/reportFiles", express.static(path.join(__dirname, "reportFiles")));
 app.use("/logo", express.static(path.join(__dirname, "logo")));
 app.use("/icon", express.static(path.join(__dirname, "icon")));
+app.use("/event", express.static(path.join(__dirname, "event")));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -69,9 +70,8 @@ const investorRouter = require("./router/investorRouter");
 const departmentRouter = require("./router/departmentRouter");
 const testimonialRouter = require("./router/testimonialRouter");
 const clientRouter = require("./router/clientRouter");
-const homeRouter = require("./router/homeRouter")
+const homeRouter = require("./router/homeRouter");
 
-app.use("/home", homeRouter)
 app.use("/auth", authRouter);
 app.use("/task", taskRouter);
 app.use("/user", userRouter);
@@ -80,6 +80,7 @@ app.use("/report", investorRouter);
 app.use("/department", departmentRouter);
 app.use("/testimonial", testimonialRouter);
 app.use("/clients", clientRouter);
+app.use("/home", homeRouter);
 
 app.get("/", function (req, res) {
   const data = {
