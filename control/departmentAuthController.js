@@ -151,6 +151,7 @@ module.exports.ChangePassword = wrapAsync(async function(req,res){
    }).status(200)
  }
  const user = await Department.findById(validToken.id);
+ console.log(user)
  if(!user){
    return res.json({
      msg:"No such user "

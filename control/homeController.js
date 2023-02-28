@@ -56,6 +56,7 @@ module.exports.ContactUs = wrapAsync(async function (req, res) {
     \n
     Contact : ${data.phone}    
     `;
+    console.log(message)
   await sendEmail(`${"naolzebene1@gmail.com"}`, "Contact", message); //there will be one open email for the website
   res,
     json({
@@ -65,7 +66,13 @@ module.exports.ContactUs = wrapAsync(async function (req, res) {
 
 module.exports.EventPost = async function (req, res) {
   const data = req.body;
-  console.log(data, "yes");
+
+  if (!(data.title && data.description && data.date)) {
+    return res.json({
+      msg: "All input is required",
+    });
+  }
+
   if (!req.files) {
     return res
       .json({
@@ -100,6 +107,11 @@ module.exports.EventPost = async function (req, res) {
 module.exports.EditEvent = wrapAsync(async function (req, res) {
   const { id } = req.params;
   const data = req.body;
+if (!(data.title && data.description && data.date)) {
+    return res.json({
+      msg: "All input is required",
+    });
+  }
 
   if (!req.files) {
     return res

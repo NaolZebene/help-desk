@@ -4,6 +4,7 @@ const SECRET_KEY = "investor";
 const bcrypt = require("bcrypt");
 const wrapAsync = require("../util/wrapAsync");
 const Token = require("../model/Token")
+const sendEmail = require("../util/sendEmail");
 const SALT = 12
 
 module.exports.Login = wrapAsync(async (req, res) => {
