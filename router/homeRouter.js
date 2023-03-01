@@ -61,7 +61,7 @@ router.delete(
   isAdmin,
   homeController.deleteEvent
 );
-router.get("/event", isUserAuth, isAdmin, homeController.getEvents);
+router.get("/event", homeController.getEvents);
 router.get("/event/:id", event, isUserAuth, isAdmin, homeController.getOneEvent);
 
 router.post(
