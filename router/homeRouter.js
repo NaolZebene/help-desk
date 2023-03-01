@@ -27,7 +27,7 @@ const upload_ev = multer({ storage: storage2 });
 
 const gallary = upload.array("file");
 const singleimg = upload.single("backimg");
-const event = upload.array("images");
+const event = upload.single("images");
 
 router.post(
   "/gallary/create",
@@ -62,7 +62,7 @@ router.delete(
   homeController.deleteEvent
 );
 router.get("/event", isUserAuth, isAdmin, homeController.getEvents);
-router.get("/event/:id", isUserAuth, isAdmin, homeController.getOneEvent);
+router.get("/event/:id", event, isUserAuth, isAdmin, homeController.getOneEvent);
 
 router.post(
   "/createbackground/create",

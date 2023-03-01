@@ -10,11 +10,9 @@ const eventSchema = new Schema({
         type:String, 
         required:true
     }, 
-    picture:[{
-        path:{
+    picture:{
             type:String
-        }
-    }], 
+        }, 
     date:{
         type:String, 
         required:true

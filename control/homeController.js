@@ -3,6 +3,8 @@ const Event = require("../model/Events");
 const sendEmail = require("../util/sendEmail");
 const Background = require("../model/Background");
 const wrapAsync = require("../util/wrapAsync");
+const fs = require("fs");
+const path = require("path");
 
 module.exports.createGallary = wrapAsync(async function (req, res) {
   if (!req.files) {
@@ -73,21 +75,14 @@ module.exports.EventPost = async function (req, res) {
     });
   }
 
-  if (!req.files) {
+  if (!req.file) {
     return res
       .json({
         msg: "Image is Required",
       })
       .status(401);
   }
-  const images = req.files;
-  const imgs = [];
-  images.map((img) => {
-    let new_img = {
-      path: img.path,
-    };
-    imgs.push(new_img);
-  });
+  const imgs = req.file.path;
   new_data = {
     title: data.title,
     description: data.description,
@@ -112,30 +107,18 @@ if (!(data.title && data.description && data.date)) {
       msg: "All input is required",
     });
   }
+  let imgs = data.images
 
-  if (!req.files) {
-    return res
-      .json({
-        msg: "Image is Required",
-      })
-      .status(401);
+  if (req.file) {
+    imgs = req.file.path;
+  }
+  if (!imgs) {
+    return res.json({
+      msg: "Image is Required",
+    });
   }
 
-  const images = req.files;
-  const imgs = [];
-  images.map((img) => {
-    let new_img = {
-      path: img.path,
-    };
-    imgs.push(new_img);
-  });
-  new_data = {
-    title: data.title,
-    description: data.description,
-    picture: imgs,
-    date: data.date,
-  };
-  const edited = await Event.findByIdAndUpdate(id, new_data);
+  const edited = await Event.findById(id);
   if (!edited) {
     return res
       .json({
@@ -143,6 +126,20 @@ if (!(data.title && data.description && data.date)) {
       })
       .status(401);
   }
+
+  if (imgs !== edited.picture) {
+    clearImage(edited.picture);
+  }
+ 
+  new_data = {
+    title: data.title,
+    description: data.description,
+    picture: imgs,
+    date: data.date,
+  };
+
+  await Event.findByIdAndUpdate(id, new_data);
+
   return res
     .json({
       msg: "Event Edited Successfully",
@@ -162,6 +159,7 @@ module.exports.getEvents = wrapAsync(async function (req, res) {
 module.exports.getOneEvent = wrapAsync(async function (req, res) {
   const { id } = req.params;
   const oneEvent = await Event.findById(id);
+  console.log(oneEvent)
   if (!oneEvent) {
     return res.json({
       msg: "No such Event",
@@ -213,3 +211,8 @@ module.exports.CreateBackground = wrapAsync(async function (req, res) {
     msg: "Background Posted Successfully",
   });
 });
+
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, "..", filePath);
+  fs.unlink(filePath, (err) => console.log(err));
+};
