@@ -82,11 +82,11 @@ module.exports.EventPost = async function (req, res) {
       })
       .status(401);
   }
-  const imgs = req.file.path;
+  const event = req.file.path;
   new_data = {
     title: data.title,
     description: data.description,
-    picture: imgs,
+    event: event,
     date: data.date,
   };
   const new_event = new Event(new_data);
@@ -107,12 +107,12 @@ if (!(data.title && data.description && data.date)) {
       msg: "All input is required",
     });
   }
-  let imgs = data.images
+  let event = data.event
 
   if (req.file) {
-    imgs = req.file.path;
+    event = req.file.path;
   }
-  if (!imgs) {
+  if (!event) {
     return res.json({
       msg: "Image is Required",
     });
@@ -127,14 +127,14 @@ if (!(data.title && data.description && data.date)) {
       .status(401);
   }
 
-  if (imgs !== edited.picture) {
-    clearImage(edited.picture);
+  if (event !== edited.event) {
+    clearImage(edited.event);
   }
  
   new_data = {
     title: data.title,
     description: data.description,
-    picture: imgs,
+    event: event,
     date: data.date,
   };
 
@@ -159,7 +159,7 @@ module.exports.getEvents = wrapAsync(async function (req, res) {
 module.exports.getOneEvent = wrapAsync(async function (req, res) {
   const { id } = req.params;
   const oneEvent = await Event.findById(id);
-  console.log(oneEvent)
+  
   if (!oneEvent) {
     return res.json({
       msg: "No such Event",

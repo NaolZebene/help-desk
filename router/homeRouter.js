@@ -27,7 +27,7 @@ const upload_ev = multer({ storage: storage2 });
 
 const gallary = upload.array("file");
 const singleimg = upload.single("backimg");
-const event = upload.single("images");
+const event = upload.single("event");
 
 router.post(
   "/gallary/create",
