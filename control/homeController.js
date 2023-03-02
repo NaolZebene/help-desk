@@ -51,6 +51,13 @@ module.exports.deletGallary = wrapAsync(async function (req, res) {
 
 module.exports.ContactUs = wrapAsync(async function (req, res) {
   const data = req.body;
+
+  if (!(data.email && data.message && data.phone)) {
+    return res.json({
+      msg: "All input is required",
+    });
+  }
+
   message = `
     from:${data.email}\n
     \n
