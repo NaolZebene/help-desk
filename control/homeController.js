@@ -13,7 +13,7 @@ module.exports.createGallary = wrapAsync(async function (req, res) {
     });
   }
   const files = req.files;
-  paths = [];
+ const paths = [];
   files.map((file) => {
     let newGallery = { path: file.path };
     paths.push(newGallery);
@@ -109,6 +109,7 @@ module.exports.EventPost = async function (req, res) {
 module.exports.EditEvent = wrapAsync(async function (req, res) {
   const { id } = req.params;
   const data = req.body;
+ 
 if (!(data.title && data.description && data.date)) {
     return res.json({
       msg: "All input is required",

@@ -25,7 +25,7 @@ var storage2 = multer.diskStorage({
 const upload = multer({ storage: storage });
 const upload_ev = multer({ storage: storage2 });
 
-const gallary = upload.array("file");
+const gallary = upload.array("gallery");
 const singleimg = upload.single("backimg");
 const event = upload.single("event");
 
@@ -36,7 +36,7 @@ router.post(
   gallary,
   homeController.createGallary
 );
-router.get("/gallary/get", isUserAuth, isAdmin, homeController.Getgallary);
+router.get("/gallary/get",  homeController.Getgallary);
 router.delete("/gallary/:id", isUserAuth, isAdmin, homeController.deletGallary);
 
 router.post("/contactus", homeController.ContactUs);
