@@ -59,7 +59,7 @@ router.get("/department/dashboarddata",isDepAuth, userController.getDepartmentDa
 router.get("/report/:companyName", isDepAuth, reportController.viewReports);
 
 /**user account */
-router.post("/edit",isLoggedIn,userController.EditUserProfile);
+router.put("/edit",isLoggedIn,userController.EditUserProfile);
 
 
 router.post("/post", isDepAuth, isDepartment, userController.CreateUser);

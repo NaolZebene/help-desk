@@ -47,6 +47,12 @@ module.exports.deletGallary = wrapAsync(async function(req,res){
 
 module.exports.ContactUs = wrapAsync(async function(req,res){
     const data = req.body
+    if (!(data.email && data.message && data.phone)) {
+        return res.json({
+          msg: "All input is required",
+        });
+      }
+
     message = `
     from:${data.email}\n
     \n
@@ -60,67 +66,88 @@ module.exports.ContactUs = wrapAsync(async function(req,res){
     })
 })
 
-module.exports.EventPost = wrapAsync(async function(req,res){
+module.exports.EventPost = async function(req,res){
     const data = req.body;
-    if(!req.files){
-        return res.json({
-            msg:"Image is Required"
-        }).status(401)
+    console.log(data)
+
+    if (!(data.title && data.description && data.date)) {
+      return res.json({
+        msg: "All input is required",
+      });
     }
-    const images = req.files
-    const imgs = []
-    images.map((img)=>{
-        let new_img = {
-            path:img.path
-        }
-        imgs.push(new_img)
-    })
-    new_data = {
-        title: data.title, 
-        description:data.description, 
-        picture:imgs, 
-        date:data.date
+  
+    if (!req.file) {
+      return res
+        .json({
+          msg: "Image is Required",
+        })
+        .status(401);
     }
-    new_event = new Event(new_data)
-    await new_event.save(); 
-    return res.json({
-        msg:"Event Posted Successfully"
-    }).status(200)
-})
+    const event = req.file.path;
+   const new_data = {
+      title: data.title,
+      description: data.description,
+      event: event,
+      date: data.date,
+    };
+    console.log(new_data);
+    const new_event = new Event(new_data);
+    await new_event.save();
+    
+    return res
+      .json({
+        msg: "Event Posted Successfully",
+      })
+      .status(200);
+}
 
 module.exports.EditEvent = wrapAsync(async function(req,res){
-    const {id} = req.params; 
-    const data = req.body
-
-    if(!req.files){
-        return res.json({
-            msg:"Image is Required"
-        }).status(401)
-    }
-
-    const images = req.files
-    const imgs = []
-    images.map((img)=>{
-        let new_img = {
-            path:img.path
-        }
-        imgs.push(new_img)
-    })
-    new_data = {
-        title: data.title, 
-        description:data.description, 
-        picture:imgs, 
-        date:data.date
-    }
-    const edited = await Event.findByIdAndUpdate(id,new_data);
-    if(!edited){
-        return res.json({
-            msg:"No Such Id"
-        }).status(401)
-    }
+    const { id } = req.params;
+  const data = req.body;
+ 
+if (!(data.title && data.description && data.date)) {
     return res.json({
-        msg:"Event Edited Successfully"
-    }).status(200)
+      msg: "All input is required",
+    });
+  }
+  let event = data.event
+
+  if (req.file) {
+    event = req.file.path;
+  }
+  if (!event) {
+    return res.json({
+      msg: "Image is Required",
+    });
+  }
+
+  const edited = await Event.findById(id);
+  if (!edited) {
+    return res
+      .json({
+        msg: "No Such Id",
+      })
+      .status(401);
+  }
+
+  if (event !== edited.event) {
+    clearImage(edited.event);
+  }
+ 
+ const new_data = {
+    title: data.title,
+    description: data.description,
+    event: event,
+    date: data.date,
+  };
+
+  await Event.findByIdAndUpdate(id, new_data);
+
+  return res
+    .json({
+      msg: "Event Edited Successfully",
+    })
+    .status(200);
 
 })
 
@@ -187,3 +214,8 @@ module.exports.getBackGround = wrapAsync(async function(req,res){
         msg:data
     }).status(200)
 })
+
+const clearImage = (filePath) => {
+    filePath = path.join(__dirname, "..", filePath);
+    fs.unlink(filePath, (err) => console.log(err));
+  };

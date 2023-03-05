@@ -19,7 +19,7 @@ var storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 const additional_file = upload.single("file");
-router.get("/edit",isLoggedIn,isInvestor,investorAccount.EditInvestorProfile)
+router.put("/edit",isLoggedIn,isInvestor,investorAccount.EditInvestorProfile)
 router.get(
   "/getannualrequest",
   isLoggedIn,

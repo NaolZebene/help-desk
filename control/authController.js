@@ -147,6 +147,13 @@ module.exports.ChangePassword = wrapAsync(async function(req,res){
   const token = req.get("Authorization").split(" ")[1];
  const validToken = jwt.verify(token, SECRET_KEY);
  const {oldpassword, confirm_password, new_password} = req.body;
+
+ if (!(oldpassword && confirm_password && new_password)) {
+  return res.json({
+    msg: "All input is required",
+  });
+}
+
  if (new_password != confirm_password){
    return res.json({
      msg:"Password Must Match"

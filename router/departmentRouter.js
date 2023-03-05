@@ -7,6 +7,6 @@ const {EditDepartmentProfile} = require("../control/userController")
 
 router.get("/escalated", isDepAuth, isDepartment, DepartmentEscalatedTasks);
 router.get("/getannualrequest",isDepAuth,isDepartment,getDepartmentYearlyData);
-router.get("/edit",isDepAuth,isDepartment, EditDepartmentProfile);
+router.put("/edit",isDepAuth,isDepartment, EditDepartmentProfile);
 
 module.exports = router;

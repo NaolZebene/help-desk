@@ -6,8 +6,9 @@ const Task = require("../model/Tasks");
 const User = require("../model/Users");
 const bcrypt = require("bcrypt");
 const SALT = 12;
-const SECRET_KEY = "department";
-const INVSECRET = "investor"
+const DEP_KEY = "department";
+const USER_SEC = "sjskbjdnbhjnbhjcsnskhnjdb";
+const INV_KEY = "investor"
 
 const wrapAsync = require("../util/wrapAsync");
 
@@ -509,9 +510,20 @@ module.exports.EditUserProfile = wrapAsync(async function(req, res){
   const data = req.body;
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, USER_SEC);
+  if (
+    !(
+      data.firstName &&
+      data.lastName &&
+      data.email &&
+      data.username
+    )
+  ) {
+    return res.json({
+      msg: "All inputs are required",
+    });
+  }
   const new_data = {
     username:data.username,
-    department:data.department, 
     firstName:data.firstName, 
     lastName:data.lastName, 
     email:data.email, 
@@ -533,7 +545,7 @@ module.exports.EditUserProfile = wrapAsync(async function(req, res){
 module.exports.EditDepartmentProfile = wrapAsync(async function (req, res) {
   const data = req.body;
   const token = req.get("Authorization").split(" ")[1];
-  const decodedToken = jwt.verify(token, "department");
+  const decodedToken = jwt.verify(token, DEP_KEY);
 
   if (!(data.email && data.title)) {
     return res
@@ -570,7 +582,7 @@ module.exports.EditDepartmentProfile = wrapAsync(async function (req, res) {
 module.exports.EditInvestorProfile = wrapAsync(async function (req, res) {
   const data = req.body;
   const token = req.get("Authorization").split(" ")[1];
-  const decodedToken = jwt.verify(token, "department");
+  const decodedToken = jwt.verify(token, INV_KEY);
   if (
     !(
       data.companyName &&
