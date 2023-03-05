@@ -4,6 +4,7 @@ const reportController = require("../control/reportController");
 const taskController = require("../control/taskController");
 const isLoggedIn = require("../util/isInv-Auth");
 const { isInvestor } = require("../util/Authorization");
+const investorAccount = require("../control/userController")
 
 const multer = require("multer");
 
@@ -18,7 +19,7 @@ var storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 const additional_file = upload.single("file");
-
+router.get("/edit",isLoggedIn,isInvestor,investorAccount.EditInvestorProfile)
 router.get(
   "/getannualrequest",
   isLoggedIn,

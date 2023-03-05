@@ -164,8 +164,7 @@ module.exports.ChangePassword = wrapAsync(async function(req,res){
    }).status(200)
  }
  const new_pass = await bcrypt.hash(new_password, SALT);
- user.password = new_pass;
- await user.save();
+ await Department.findByIdAndUpdate(validToken.id,{password:new_pass});
  return res.json({
    msg:"Password Changed Successfully"
  }).status(200)

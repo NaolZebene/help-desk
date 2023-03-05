@@ -27,7 +27,7 @@ const upload_ev = multer({ storage: storage2 });
 
 const gallary = upload.array("gallery");
 const singleimg = upload.single("backimg");
-const event = upload.single("event");
+const event = upload_ev.single("event");
 
 router.post(
   "/gallary/create",
@@ -71,5 +71,6 @@ router.post(
   singleimg,
   homeController.CreateBackground
 );
+router.get("/background",isUserAuth,isAdmin,homeController.getBackGround)
 
 module.exports = router;

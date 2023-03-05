@@ -503,3 +503,111 @@ module.exports.getInvestorDashboardData = wrapAsync(async function(req,res){
     msg:data
   }).status(200)
 })
+////////////profile
+
+module.exports.EditUserProfile = wrapAsync(async function(req, res){
+  const data = req.body;
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, USER_SEC);
+  const new_data = {
+    username:data.username,
+    department:data.department, 
+    firstName:data.firstName, 
+    lastName:data.lastName, 
+    email:data.email, 
+  }
+  const user_data = await User.findByIdAndUpdate(decodedToken.id,new_data,{
+    runValidators: true,
+  });
+  if (!user_data){
+    return res.json({
+      msg:"No such user"
+    }).status(401)
+  }
+
+  return res.json({
+    msg:"Data Updated Successfully"
+  }).status(200)
+})
+
+module.exports.EditDepartmentProfile = wrapAsync(async function (req, res) {
+  const data = req.body;
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, "department");
+
+  if (!(data.email && data.title)) {
+    return res
+      .json({
+        msg: "All inputs are required",
+      })
+      .status(403);
+  }
+
+  const datas = {
+    title: data.title,
+    email: data.email,
+  };
+
+  const data_exists = await Department.findByIdAndUpdate(decodedToken.id, datas, {
+    runValidators: true,
+  });
+
+  if (!data_exists) {
+    return res
+      .json({
+        msg: "No Such Department",
+      })
+      .status(403);
+  }
+
+  return res
+    .json({
+      msg: "Department Updated Successfully",
+    })
+    .status(200);
+});
+
+module.exports.EditInvestorProfile = wrapAsync(async function (req, res) {
+  const data = req.body;
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, "department");
+  if (
+    !(
+      data.companyName &&
+      data.location &&
+      data.contact_phone &&
+      data.contact_person &&
+      data.email
+    )
+  ) {
+    return res
+      .json({
+        msg: "All inputs are required",
+      })
+      .status(401);
+  }
+  let datas = {
+    companyName: data.companyName,
+    location: data.location,
+    contact_phone: data.contact_phone,
+    contact_person: data.contact_person,
+    email: data.email,
+  };
+  const data_exists = await Investor.findByIdAndUpdate(decodedToken.id, datas, {
+    runValidators: true,
+  });
+
+  if (!data_exists) {
+    return res
+      .json({
+        msg: "No Such Investor",
+      })
+      .status(403);
+  }
+
+  return res
+    .json({
+      msg: "Investor Account Information updated successfully",
+    })
+    .status(200);
+});

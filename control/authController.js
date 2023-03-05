@@ -146,8 +146,8 @@ module.exports.changeForgetPassword = async function (req, res) {
 module.exports.ChangePassword = wrapAsync(async function(req,res){
   const token = req.get("Authorization").split(" ")[1];
  const validToken = jwt.verify(token, SECRET_KEY);
- const {oldpassword, confirmoldpassword, new_password} = req.body;
- if (oldpassword != confirmoldpassword){
+ const {oldpassword, confirm_password, new_password} = req.body;
+ if (new_password != confirm_password){
    return res.json({
      msg:"Password Must Match"
    }).status(200)
@@ -165,8 +165,7 @@ module.exports.ChangePassword = wrapAsync(async function(req,res){
    }).status(200)
  }
  const new_pass = await bcrypt.hash(new_password, SALT);
- user.password = new_pass;
- await user.save();
+ await User.findByIdAndUpdate(validToken.id,{password:new_pass});
  return res.json({
    msg:"Password Changed Successfully"
  }).status(200)
