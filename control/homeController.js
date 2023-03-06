@@ -7,14 +7,14 @@ const fs = require("fs");
 const path = require("path");
 
 module.exports.createGallary = wrapAsync(async function(req,res){
-    if(!req.files){
+    if(!req.files.length){
         return res.json({
-            msg:"File is Required"
+            msg:"Image is Required"
 
         })
     }
     const files = req.files
-    paths =[]
+  const paths =[]
     files.map((file)=>{
         let newGallery = {path:file.path}
         paths.push(newGallery)
@@ -34,6 +34,7 @@ module.exports.Getgallary = wrapAsync(async function(req,res){
 
 module.exports.deletGallary = wrapAsync(async function(req,res){
     const {id} = req.params;
+    console.log(id)
     const imageExists = await Gallary.findById(id);
     if(!imageExists){
         return res.json({
@@ -210,7 +211,7 @@ module.exports.CreateBackground = wrapAsync(async function(req,res){
 
 })
 module.exports.getBackGround = wrapAsync(async function(req,res){
-    const data = await Background.find()
+    const data = await Background.findOne()
     return res.json({
         msg:data
     }).status(200)

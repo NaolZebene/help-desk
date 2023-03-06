@@ -71,6 +71,6 @@ router.post(
   singleimg,
   homeController.CreateBackground
 );
-router.get("/background",isUserAuth,isAdmin,homeController.getBackGround)
+router.get("/background",homeController.getBackGround)
 
 module.exports = router;
