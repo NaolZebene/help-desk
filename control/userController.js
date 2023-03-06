@@ -6,7 +6,7 @@ const Task = require("../model/Tasks");
 const User = require("../model/Users");
 const bcrypt = require("bcrypt");
 const SALT = 12;
-const DEP_KEY = "department";
+const SECRET_KEY = "department";
 const USER_SEC = "sjskbjdnbhjnbhjcsnskhnjdb";
 const INV_KEY = "investor"
 
@@ -545,7 +545,7 @@ module.exports.EditUserProfile = wrapAsync(async function(req, res){
 module.exports.EditDepartmentProfile = wrapAsync(async function (req, res) {
   const data = req.body;
   const token = req.get("Authorization").split(" ")[1];
-  const decodedToken = jwt.verify(token, DEP_KEY);
+  const decodedToken = jwt.verify(token, SECRET_KEY);
 
   if (!(data.email && data.title)) {
     return res

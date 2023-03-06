@@ -14,7 +14,7 @@ router.post("/investor/passwordreset/:userId/:token", investorAuthContoller.chan
 
 router.post("/department/changepassword",departmentAuthController.ChangePassword)
 router.post("/department/login", departmentAuthController.Login);
-router.post("/verifyusertoken", authControl.VerifyUserToken);
+router.get("/verifyusertoken", authControl.VerifyUserToken);
 router.get(
   "/department/verifyToken",
   departmentAuthController.VerifyDepartmentToken
