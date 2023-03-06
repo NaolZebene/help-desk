@@ -3,7 +3,8 @@ const Event = require("../model/Events")
 const sendEmail = require("../util/sendEmail")
 const Background = require("../model/Background")
 const wrapAsync = require("../util/wrapAsync");
-
+const fs = require("fs");
+const path = require("path");
 
 module.exports.createGallary = wrapAsync(async function(req,res){
     if(!req.files){

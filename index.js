@@ -49,6 +49,8 @@ app.use("/reportFiles", express.static(path.join(__dirname, "reportFiles")));
 app.use("/logo", express.static(path.join(__dirname, "logo")));
 app.use("/icon", express.static(path.join(__dirname, "icon")));
 app.use("/gallary", express.static(path.join(__dirname, "gallary")));
+app.use("/event", express.static(path.join(__dirname, "event")));
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
