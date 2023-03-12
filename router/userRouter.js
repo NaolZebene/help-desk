@@ -30,6 +30,7 @@ const { isAdmin, isDepartment } = require("../util/Authorization");
 
 
 router.get("/dashboarddata",isLoggedIn,isAdmin,userController.getSuperAdminDashboardData)
+router.get("/viewprofile",isLoggedIn,userController.ViewUserProfile)
 
 // Details
 router.get(

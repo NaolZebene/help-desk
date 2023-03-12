@@ -9,6 +9,8 @@ const SALT = 12;
 const SECRET_KEY = "department";
 const USER_SEC = "sjskbjdnbhjnbhjcsnskhnjdb";
 const INV_KEY = "investor"
+const SALT = 12;
+
 
 const wrapAsync = require("../util/wrapAsync");
 
@@ -623,3 +625,75 @@ module.exports.EditInvestorProfile = wrapAsync(async function (req, res) {
     })
     .status(200);
 });
+
+module.exports.ViewUserProfile = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, USER_SEC);
+  const user = await User.findById(decodedToken.id)
+
+  if (!data_exists) {
+    return res
+      .json({
+        msg: "No Such User",
+      })
+      .status(403);
+  }
+  const new_data = {
+    username:user.username, 
+    department:user.department, 
+    firstName:user.firstName,
+    lastName:user.lastName,
+    email:user.email,
+    rating:user.rating
+  }
+  return res.json({
+    msg:new_data
+  }).status(200)
+
+})
+
+module.exports.ViewDepartmentProfile = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, INV_KEY);
+  const DepData = await Department.findById(decodedToken.id).populate("services")
+
+  if (!DepData) {
+    return res
+      .json({
+        msg: "No Such Department",
+      })
+      .status(403);
+  }
+  const new_data = {
+    title:DepData.title, 
+    email:DepData.email, 
+    services:DepData.services,
+    depType:DepData.depType
+  }
+  return res.json({
+    msg:new_data
+  }).status(200)
+
+})
+
+module.exports.ViewInvestorProfile = wrapAsync(async function(req,res){
+  const token = req.get("Authorization").split(" ")[1];
+  const decodedToken = jwt.verify(token, INV_KEY);
+  const invData = await Investor.findById(decodedToken.id);
+  if(!invData){
+    return res.json({
+      msg:"No such User"
+    }).status(401)
+  }
+  const data = {
+    companyName : invData.companyName,
+    location:invData.location, 
+    contact_person:invData.contact_person,
+    contact_phone:invData.contact_phone,
+    email:invData.email
+  }
+  return res.json({
+    msg:data
+  }).status(200)
+})
+
