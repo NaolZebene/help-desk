@@ -9,8 +9,6 @@ const SALT = 12;
 const SECRET_KEY = "department";
 const USER_SEC = "sjskbjdnbhjnbhjcsnskhnjdb";
 const INV_KEY = "investor"
-const SALT = 12;
-
 
 const wrapAsync = require("../util/wrapAsync");
 
@@ -455,60 +453,60 @@ module.exports.getOneDepartment = wrapAsync(async function (req, res) {
     .status(200);
 });
 
-module.exports.getDepartmentDashboardData = wrapAsync(async function(req,res){
+module.exports.getDepartmentDashboardData = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, SECRET_KEY);
-  const employees = await User.count({department: decodedToken.name})
-  const request = await Task.count({department:decodedToken.id})
-  const canceled = await Task.count({isAssigned:"decline",department:decodedToken.id})
-  const completed = await Task.count({isAssigned:"completed", department:decodedToken.id})
+  const employees = await User.count({ department: decodedToken.name })
+  const request = await Task.count({ department: decodedToken.id })
+  const canceled = await Task.count({ isAssigned: "decline", department: decodedToken.id })
+  const completed = await Task.count({ isAssigned: "completed", department: decodedToken.id })
   const data = {
-    total_employees:employees,
-    totalrequest:request,
-    canceled:canceled,
-    completed:completed
+    total_employees: employees,
+    totalrequest: request,
+    canceled: canceled,
+    completed: completed
   }
 
   return res.json({
-    msg:data
+    msg: data
   }).status(200)
 })
 
-module.exports.getSuperAdminDashboardData = wrapAsync(async function(req,res){
+module.exports.getSuperAdminDashboardData = wrapAsync(async function (req, res) {
   const employees = await User.count({})
   const request = await Task.count({})
-  const canceled = await Task.count({isAssigned:"decline"})
-  const completed = await Task.count({isAssigned:"completed"})
+  const canceled = await Task.count({ isAssigned: "decline" })
+  const completed = await Task.count({ isAssigned: "completed" })
   const data = {
-    total_employees:employees,
-    totalrequest:request,
-    canceled:canceled,
-    completed:completed
+    total_employees: employees,
+    totalrequest: request,
+    canceled: canceled,
+    completed: completed
   }
 
   return res.json({
-    msg:data
+    msg: data
   }).status(200)
 })
 
-module.exports.getInvestorDashboardData = wrapAsync(async function(req,res){
+module.exports.getInvestorDashboardData = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, "investor");
-  const request = await Task.count({companyName:decodedToken.name})
-  const completed = await Task.count({isAssigned:"completed",companyName:decodedToken.name})
+  const request = await Task.count({ companyName: decodedToken.name })
+  const completed = await Task.count({ isAssigned: "completed", companyName: decodedToken.name })
 
   const data = {
-    totalrequest:request,
-    completed:completed
+    totalrequest: request,
+    completed: completed
   }
 
   return res.json({
-    msg:data
+    msg: data
   }).status(200)
 })
 ////////////profile
 
-module.exports.EditUserProfile = wrapAsync(async function(req, res){
+module.exports.EditUserProfile = wrapAsync(async function (req, res) {
   const data = req.body;
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, USER_SEC);
@@ -525,22 +523,22 @@ module.exports.EditUserProfile = wrapAsync(async function(req, res){
     });
   }
   const new_data = {
-    username:data.username,
-    firstName:data.firstName, 
-    lastName:data.lastName, 
-    email:data.email, 
+    username: data.username,
+    firstName: data.firstName,
+    lastName: data.lastName,
+    email: data.email,
   }
-  const user_data = await User.findByIdAndUpdate(decodedToken.id,new_data,{
+  const user_data = await User.findByIdAndUpdate(decodedToken.id, new_data, {
     runValidators: true,
   });
-  if (!user_data){
+  if (!user_data) {
     return res.json({
-      msg:"No such user"
+      msg: "No such user"
     }).status(401)
   }
 
   return res.json({
-    msg:"Data Updated Successfully"
+    msg: "Data Updated Successfully"
   }).status(200)
 })
 
@@ -626,12 +624,12 @@ module.exports.EditInvestorProfile = wrapAsync(async function (req, res) {
     .status(200);
 });
 
-module.exports.ViewUserProfile = wrapAsync(async function(req,res){
+module.exports.ViewUserProfile = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, USER_SEC);
   const user = await User.findById(decodedToken.id)
 
-  if (!data_exists) {
+  if (!user) {
     return res
       .json({
         msg: "No Such User",
@@ -639,23 +637,23 @@ module.exports.ViewUserProfile = wrapAsync(async function(req,res){
       .status(403);
   }
   const new_data = {
-    username:user.username, 
-    department:user.department, 
-    firstName:user.firstName,
-    lastName:user.lastName,
-    email:user.email,
-    rating:user.rating
+    username: user.username,
+    department: user.department,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    rating: user.rating
   }
   return res.json({
-    msg:new_data
+    msg: new_data
   }).status(200)
 
 })
 
-module.exports.ViewDepartmentProfile = wrapAsync(async function(req,res){
+module.exports.ViewDepartmentProfile = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
-  const decodedToken = jwt.verify(token, INV_KEY);
-  const DepData = await Department.findById(decodedToken.id).populate("services")
+  const decodedToken = jwt.verify(token, SECRET_KEY);
+  const DepData = await Department.findById(decodedToken.id).populate('services')
 
   if (!DepData) {
     return res
@@ -665,35 +663,35 @@ module.exports.ViewDepartmentProfile = wrapAsync(async function(req,res){
       .status(403);
   }
   const new_data = {
-    title:DepData.title, 
-    email:DepData.email, 
-    services:DepData.services,
-    depType:DepData.depType
+    title: DepData.title,
+    email: DepData.email,
+    services: DepData.services,
+    depType: DepData.depType
   }
   return res.json({
-    msg:new_data
+    msg: new_data
   }).status(200)
 
 })
 
-module.exports.ViewInvestorProfile = wrapAsync(async function(req,res){
+module.exports.ViewInvestorProfile = wrapAsync(async function (req, res) {
   const token = req.get("Authorization").split(" ")[1];
   const decodedToken = jwt.verify(token, INV_KEY);
   const invData = await Investor.findById(decodedToken.id);
-  if(!invData){
+  if (!invData) {
     return res.json({
-      msg:"No such User"
+      msg: "No such User"
     }).status(401)
   }
   const data = {
-    companyName : invData.companyName,
-    location:invData.location, 
-    contact_person:invData.contact_person,
-    contact_phone:invData.contact_phone,
-    email:invData.email
+    companyName: invData.companyName,
+    location: invData.location,
+    contact_person: invData.contact_person,
+    contact_phone: invData.contact_phone,
+    email: invData.email
   }
   return res.json({
-    msg:data
+    msg: data
   }).status(200)
 })
 
